@@ -21,10 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Configuration\Models\" />
-    <Folder Include="Features\Configuration\Repository\Entities\" />
     <Folder Include="Features\Configuration\Repository\Sql\" />
-    <Folder Include="Features\Configuration\Validations\" />
     <Folder Include="Features\Configuration\UseCase\" />
   </ItemGroup>
 

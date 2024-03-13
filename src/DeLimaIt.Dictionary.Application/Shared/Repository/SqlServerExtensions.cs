@@ -24,7 +24,6 @@ namespace DeLimaIt.Dictionary.Application.Shared.Repository
                     failureStatus: HealthStatus.Unhealthy,
                     tags: new[] { "db", "sql", "sql server" },
                     timeout: TimeSpan.TryParse(sqlTimeoutKey, out var sqlServerTimeout) ? TimeSpan.FromSeconds(15) : sqlServerTimeout);
-                );
             return services;
         }
     }
