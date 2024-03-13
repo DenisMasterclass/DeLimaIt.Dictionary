@@ -18,7 +18,7 @@ namespace DeLimaIt.Dictionary.Application.Feature.Configuration.Infra
 
         public void Connect(string conn)
         {
-            using (IDbConnection db = new SqlConnection(conn))
+            using (SqlConnection db = new SqlConnection(conn))
             {
                 try
                 {
@@ -31,6 +31,7 @@ namespace DeLimaIt.Dictionary.Application.Feature.Configuration.Infra
                      Console.WriteLine("Ocorreu um erro ao se conectar ao banco de dados SQL Server:");
                     _logger.LogInformation("Ocorreu um erro ao se conectar ao banco de dados SQL Server: " + e.Message);
                     Console.WriteLine(e.Message);
+                    db.Dispose();
                 }
             }
         }
