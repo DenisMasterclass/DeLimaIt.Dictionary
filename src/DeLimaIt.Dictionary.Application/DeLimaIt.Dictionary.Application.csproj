@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Configuration\Repository\Sql\" />
     <Folder Include="Features\Configuration\UseCase\" />
   </ItemGroup>
 
