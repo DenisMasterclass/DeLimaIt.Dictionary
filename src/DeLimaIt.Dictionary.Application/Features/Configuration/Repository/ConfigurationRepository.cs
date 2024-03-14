@@ -17,5 +17,6 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository
             var configurationModelList = await connection.QueryAsync<ParameterEntity>(GetSqlParameters,filter,_context.Transaction).ConfigureAwait(false);
             return configurationModelList;
         }
+
     }
 }
