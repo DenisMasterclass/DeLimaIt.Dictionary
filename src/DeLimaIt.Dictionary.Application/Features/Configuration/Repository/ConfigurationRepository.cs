@@ -11,7 +11,7 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository
         {
             _context = context;
         }
-        public async Task<IEnumerable<ParameterEntity>> GetParametersAsync(ConfigurationParameterFilter filter)
+        public async Task<IEnumerable<ParameterEntity>> GetParametersAsync(ConfigurationParameterFilter filter, CancellationToken cancellationToken = default)
         {
             var connection = _context.Connection;
             var configurationModelList = await connection.QueryAsync<ParameterEntity>(GetSqlParameters,filter,_context.Transaction).ConfigureAwait(false);
