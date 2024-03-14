@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Entities
 {
-    public class ParameterValueFilter
+    public class ParameterValueEntity
     {
-        public ParameterValueFilter()
+        public ParameterValueEntity()
         {
 
         }
 
-        public ParameterValueFilter(int parameterId, string key, string value)
+        public ParameterValueEntity(int parameterId, string key, string value)
         {
             ParameterId = parameterId;
             Key = key;

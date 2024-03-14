@@ -20,7 +20,7 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Sql
                                                         WHERE P.COD_PARAMETRO = @Id
                                                         ";
 
-        internal const string InsertParameterValue = @"INSERT INTO CONFIGURACAO_CHAVE
+        internal const string InsertSqlParameterValue = @"INSERT INTO CONFIGURACAO_CHAVE
                                                     (
                                                         COD_PARAMETRO,
                                                         DSC_CHAVE,
@@ -34,11 +34,11 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Sql
                                                     )
                                                     ";
 
-        internal const string UpdateParameterValue = @"UPDATE CONFIGURACAO_CHAVE 
+        internal const string UpdateSqlParameterValue = @"UPDATE CONFIGURACAO_CHAVE 
                                 SET DSC_VALOR = @Value 
                                 WHERE COD_PARAMETRO = @ParameterId AND DSC_CHAVE = @Key
                                 ";
-        internal const string DeleteParameterValue = @"DELETE FROM CONFIGURACAO_CHAVE 
+        internal const string DeleteSqlParameterValue = @"DELETE FROM CONFIGURACAO_CHAVE 
                                                        WHERE COD_PARAMETRO = @ParameterId 
                                                        AND DSC_CHAVE = @Key
                                                         ";
