@@ -1,41 +1,30 @@
-﻿using DeLimaIt.Dictionary.Application.Features.Configuration.Models;
+﻿using DelimaIt.Core.UseCases;
+using DeLimaIt.Dictionary.Application.Features.Configuration.Models;
 using DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Entities;
 using FluentValidation;
+using DelimaIt.Core.UseCases.Outputs;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeLimaIt.Dictionary.Application.Features.Configuration.UseCase
 {
-    public sealed class ConfigurationGetParameterValueUseCase
+    public sealed class ConfigurationGetParameterValueUseCase : UseCaseHandlerBase<ConfigurationParameterValueGetInput, List<ConfigurationParameterValueGetOutput>>
     {
         private readonly IConfigurationRepository _configurationRepository;
-        private readonly ILogger _logger;
+        private readonly ILogger<ConfigurationGetParameterValueUseCase> _logger;
 
-        public ConfigurationGetParameterValueUseCase(IConfigurationRepository configurationRepository,IValidator<ConfigurationParameterValueGetInput> validator, ILogger<ConfigurationGetParameterUseCase> logger) 
+        public ConfigurationGetParameterValueUseCase(IConfigurationRepository configurationRepository, IValidator<ConfigurationParameterValueGetInput> validator, ILogger<ConfigurationGetParameterValueUseCase> logger)
+        :base(logger,validator)
         {
             _configurationRepository = configurationRepository;
             _logger = logger;
         }
-        public async Task<List<ConfigurationParameterValueGetOutput>> GetParameterValue(ConfigurationParameterValueGetInput request, CancellationToken cancellationToken)
+        protected override async Task<Output<List<ConfigurationParameterValueGetOutput>>> HandleAsync (ConfigurationParameterValueGetInput request, CancellationToken cancellationToken)
         {
-            var output = new List<ConfigurationParameterValueGetOutput>();
+            var output = new Output<List<ConfigurationParameterValueGetOutput>>();
             var filter = new ParameterFilter(request.ParameterId);
-            try
-            {
                 var parametersModelList = await _configurationRepository.GetParametersValuesAsync(filter, cancellationToken);
                 var parameterList = parametersModelList.Select(c => new ConfigurationParameterValueGetOutput(c.Key, c.Value)).ToList();
-                output = parameterList;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Ocorreu o erro : " + ex.Message);
-                throw;
-            }
-
+                output.AddResult(parameterList);
 
             return output;
         }

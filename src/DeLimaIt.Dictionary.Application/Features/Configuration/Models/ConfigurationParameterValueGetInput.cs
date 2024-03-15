@@ -2,7 +2,7 @@
 
 namespace DeLimaIt.Dictionary.Application.Features.Configuration.Models
 {
-    public sealed class ConfigurationParameterValueGetInput : IRequest<ConfigurationParameterValueGetOutput>
+    public sealed class ConfigurationParameterValueGetInput : IRequest<List<ConfigurationParameterValueGetOutput>>
     {
         public ConfigurationParameterValueGetInput(int parameterId)
         {

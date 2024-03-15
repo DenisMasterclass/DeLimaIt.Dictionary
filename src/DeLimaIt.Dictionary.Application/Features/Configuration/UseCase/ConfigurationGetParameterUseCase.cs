@@ -12,6 +12,7 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.UseCase
         private readonly ILogger _logger;
 
         public ConfigurationGetParameterUseCase(IConfigurationRepository configurationRepository, IValidator<ConfigurationParameterGetInput> validator, ILogger<ConfigurationGetParameterUseCase> logger)
+        :base(logger, validator)
         {
             _configurationRepository = configurationRepository;
             _logger = logger;
