@@ -125,7 +125,7 @@ namespace DelimaIt.Core.UseCases.Outputs
 
 
 
-        private void AddResult(T result)
+        public void AddResult(T result)
         {
             if (result == null)
             {

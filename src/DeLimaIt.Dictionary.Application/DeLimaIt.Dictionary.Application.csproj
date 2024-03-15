@@ -20,4 +20,8 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\DelimaIt.Core.UseCases\DelimaIt.Core.UseCases.csproj" />
+  </ItemGroup>
+
 </Project>
