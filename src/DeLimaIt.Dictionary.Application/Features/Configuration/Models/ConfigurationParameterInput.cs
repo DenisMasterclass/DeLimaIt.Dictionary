@@ -20,8 +20,8 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Models
 
         public ConfigurationParameterInput(OperationType operation, int parameterId, string key, string value, Guid correlationId, Guid transactionId) : this(operation, parameterId, key, value)
         {
-            CorrelationId = correlationId;
-            TransactionId = transactionId;
+            CorrelationId = correlationId == Guid.Empty ? Guid.NewGuid() : correlationId;
+            TransactionId = transactionId == Guid.Empty ? Guid.NewGuid() : transactionId;
         }
 
         public OperationType Operation { get; set; }

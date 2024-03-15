@@ -17,8 +17,8 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Models
 
         public ConfigurationGetInput(int moduleId, string parameterId, Guid correlationId, Guid transactionId) : this(moduleId, parameterId)
         {
-            CorrelationId = correlationId;
-            TransactionId = transactionId;
+            CorrelationId = correlationId == Guid.Empty ? Guid.NewGuid() : correlationId;
+            TransactionId = transactionId == Guid.Empty ? Guid.NewGuid() : transactionId; ;
         }
 
         public int ModuleId { get; set; }
