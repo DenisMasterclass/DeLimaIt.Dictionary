@@ -14,4 +14,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\DelimaIt.Core.UseCases\DelimaIt.Core.UseCases.csproj" />
+    <ProjectReference Include="..\DeLimaIt.Dictionary.Application\DeLimaIt.Dictionary.Application.csproj" />
+  </ItemGroup>
+
 </Project>
