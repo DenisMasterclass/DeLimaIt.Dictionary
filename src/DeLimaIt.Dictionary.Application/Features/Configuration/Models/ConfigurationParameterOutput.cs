@@ -8,5 +8,7 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Models
 {
     public sealed class ConfigurationParameterOutput
     {
+        public int RecordsAffect { get; set; }
+        public string Message { get; set; }
     }
 }
