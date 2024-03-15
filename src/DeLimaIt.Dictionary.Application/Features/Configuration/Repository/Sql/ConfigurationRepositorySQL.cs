@@ -11,7 +11,7 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Sql
         internal const string GetSqlParameters = @"SELECT COD_PARAMETRO AS Id,
                                                     NOM_PARAMETRO AS Name
                                                     FROM CONFIGURACAO_PARAMETRO P WITH(NOLOCK)
-                                                    WHERE P.COD_MODULO = ModuleId";
+                                                    WHERE P.COD_MODULO = @ModuleId";
 
         internal const string GetSqlParametersValues = @"SELECT COD_PARAMETRO AS ParameterId,
                                                         DSC_CHAVE AS Key,
