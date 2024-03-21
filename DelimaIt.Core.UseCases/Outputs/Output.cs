@@ -131,6 +131,7 @@ namespace DelimaIt.Core.UseCases.Outputs
             {
                 throw new ResultNullException("Result object is null, please verify");
             }
+            _result = result;
         }
 
         public virtual void AddValidationResult(ValidationResult validationResult)

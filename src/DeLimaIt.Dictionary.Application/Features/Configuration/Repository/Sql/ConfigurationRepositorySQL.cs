@@ -13,10 +13,10 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Sql
                                                     FROM CONFIGURACAO_PARAMETRO P WITH(NOLOCK)
                                                     WHERE P.COD_MODULO = @ModuleId";
 
-        internal const string GetSqlParametersValues = @"SELECT COD_PARAMETRO AS ParameterId,
-                                                        DSC_CHAVE AS Key,
-                                                        DSC_VALOR AS Value
-                                                        FROM CONFIGURACAO_CHAVE P WITH(NOLOCK)
+        internal const string GetSqlParametersValues = @"SELECT COD_PARAMETRO 'ParameterId',
+                                                        DSC_CHAVE 'Key',
+                                                        DSC_VALOR 'Value'
+                                                        FROM CONFIGURACAO_CHAVE P 
                                                         WHERE P.COD_PARAMETRO = @Id
                                                         ";
 

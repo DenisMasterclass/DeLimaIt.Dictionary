@@ -9,7 +9,7 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.UseCase
     public sealed class ConfigurationGetParameterUseCase : UseCaseHandlerBase<ConfigurationParameterGetInput, List<ConfigurationParameterGetOutput>>
     {
         private readonly IConfigurationRepository _configurationRepository;
-        private readonly ILogger _logger;
+        private readonly ILogger<ConfigurationGetParameterUseCase> _logger;
 
         public ConfigurationGetParameterUseCase(IConfigurationRepository configurationRepository, IValidator<ConfigurationParameterGetInput> validator, ILogger<ConfigurationGetParameterUseCase> logger)
         :base(logger, validator)
