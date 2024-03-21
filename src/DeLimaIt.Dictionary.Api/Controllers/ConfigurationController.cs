@@ -65,7 +65,7 @@ namespace DeLimaIt.Dictionary.Api.Controllers
             }
             return BadRequest(output);
         }
-        [HttpPut("Parameters/Values/{parameterId}/{parameterValueKey}", Name = "UpdateParameterValues")]
+        [HttpPut("Parameters/Values/{parameterId}", Name = "UpdateParameterValues")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -79,7 +79,7 @@ namespace DeLimaIt.Dictionary.Api.Controllers
             }
             return BadRequest(output);
         }
-        [HttpPost("Parameters/Values/{parameterId}/{parameterValueKey}", Name = "InsertParameterValues")]
+        [HttpPost("Parameters/Values/{parameterId}", Name = "InsertParameterValues")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
