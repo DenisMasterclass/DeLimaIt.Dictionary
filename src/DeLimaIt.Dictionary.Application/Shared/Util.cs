@@ -5,38 +5,38 @@ namespace DeLimaIt.Dictionary.Application.Shared
 {
     public static class Util
     {
-        public static string ToStringFromDictionary(this string value,string parameterName,Dictionary<string, Dictionary<string, string>> dicParameters)
+        public static string ToStringFromDictionary(this string value,string DictionaryName,Dictionary<string, Dictionary<string, string>> dicDictionaries)
         {
-            string parameterValue = "";
-            if (dicParameters.TryGetValue(parameterName, out var dicParameter))
+            string DictionaryValue = "";
+            if (dicDictionaries.TryGetValue(DictionaryName, out var dicDictionary))
             {
-                dicParameter.TryGetValue(value, out parameterValue);
+                dicDictionary.TryGetValue(value, out DictionaryValue);
             }
-            return parameterValue;
+            return DictionaryValue;
         }
 
-        public static string ToStringFromDictionary(this int value, string parameterName, Dictionary<string, Dictionary<string, string>> dicParameters)
+        public static string ToStringFromDictionary(this int value, string DictionaryName, Dictionary<string, Dictionary<string, string>> dicDictionaries)
         {
-            string parameterValue = "";
-            if (dicParameters.TryGetValue(parameterName, out var dicParameter))
+            string DictionaryValue = "";
+            if (dicDictionaries.TryGetValue(DictionaryName, out var dicDictionary))
             {
-                dicParameter.TryGetValue(value.ToString(), out parameterValue);
+                dicDictionary.TryGetValue(value.ToString(), out DictionaryValue);
             }
-            return parameterValue;
+            return DictionaryValue;
         }
 
-        public static string ToStringFromDictionaryOrDefault(this string value, string parameterName, Dictionary<string, Dictionary<string, string>> dicParameters)
+        public static string ToStringFromDictionaryOrDefault(this string value, string DictionaryName, Dictionary<string, Dictionary<string, string>> dicDictionaries)
         {
-            string parameterValue = "";
-            if (dicParameters.TryGetValue(parameterName, out var dicParameter))
+            string DictionaryValue = "";
+            if (dicDictionaries.TryGetValue(DictionaryName, out var dicDictionary))
             {
-                if (!dicParameter.TryGetValue(value, out parameterValue))
+                if (!dicDictionary.TryGetValue(value, out DictionaryValue))
                 {
-                    parameterValue = value;
+                    DictionaryValue = value;
 
                 }
             }
-            return parameterValue;
+            return DictionaryValue;
         }
         public static string ToBrString(this decimal value)
         {

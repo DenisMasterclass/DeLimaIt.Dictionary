@@ -2,14 +2,14 @@
 
 namespace DeLimaIt.Dictionary.Application.Features.Configuration.Models
 {
-    public sealed class ConfigurationParameterGetInput : IRequest<List<ConfigurationParameterGetOutput>>
+    public sealed class ConfigurationDictionaryGetInput : IRequest<List<ConfigurationDictionaryGetOutput>>
     {
-        public ConfigurationParameterGetInput(int moduleId)
+        public ConfigurationDictionaryGetInput(int moduleId)
         {
             ModuleId = moduleId;
         }
 
-        public ConfigurationParameterGetInput(int moduleId, Guid correlationId, Guid transactionId) : this(moduleId)
+        public ConfigurationDictionaryGetInput(int moduleId, Guid correlationId, Guid transactionId) : this(moduleId)
         {
             CorrelationId = correlationId == Guid.Empty ? Guid.NewGuid() : correlationId;
             TransactionId = transactionId == Guid.Empty ? Guid.NewGuid() : transactionId;

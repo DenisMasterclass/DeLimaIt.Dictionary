@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Entities
 {
-    public class ParameterEntity
+    public class DictionaryEntity
     {
-        public ParameterEntity()
+        public DictionaryEntity()
         {
 
         }
 
-        public ParameterEntity(int id, string name)
+        public DictionaryEntity(int id, string name)
         {
             Id = id;
             Name = name;

@@ -10,17 +10,17 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.DependencyInjec
 {
     public static class ConfigurationExtension
     {
-        public static IServiceCollection AddConfigurationParameters(this IServiceCollection services)
+        public static IServiceCollection AddConfigurationDictionaries(this IServiceCollection services)
         {
             services.AddScoped<IConfigurationRepository, ConfigurationRepository>();
 
-            services.AddSingleton<IValidator<ConfigurationParameterGetInput>, ConfigurationParameterGetValidation>();
-            services.AddSingleton<IValidator<ConfigurationParameterInput>, ConfigurationParameterValuesValidation>();
-            services.AddSingleton<IValidator<ConfigurationParameterValueGetInput>, ConfigurationParameterValueGetValidation>();
+            services.AddSingleton<IValidator<ConfigurationDictionaryGetInput>, ConfigurationDictionaryGetValidation>();
+            services.AddSingleton<IValidator<ConfigurationDictionaryInput>, ConfigurationDictionaryValuesValidation>();
+            services.AddSingleton<IValidator<ConfigurationDictionaryValueGetInput>, ConfigurationDictionaryValueGetValidation>();
 
-            services.AddScoped<UseCaseHandlerBase<ConfigurationParameterGetInput, List<ConfigurationParameterGetOutput>>, ConfigurationGetParameterUseCase>();
-            services.AddScoped<UseCaseHandlerBase<ConfigurationParameterValueGetInput, List<ConfigurationParameterValueGetOutput>>, ConfigurationGetParameterValueUseCase>();
-            services.AddScoped<UseCaseHandlerBase<ConfigurationParameterInput, ConfigurationParameterOutput>, ConfigurationParameterValuesUseCase>();
+            services.AddScoped<UseCaseHandlerBase<ConfigurationDictionaryGetInput, List<ConfigurationDictionaryGetOutput>>, ConfigurationGetDictionaryUseCase>();
+            services.AddScoped<UseCaseHandlerBase<ConfigurationDictionaryValueGetInput, List<ConfigurationDictionaryValueGetOutput>>, ConfigurationGetDictionaryValueUseCase>();
+            services.AddScoped<UseCaseHandlerBase<ConfigurationDictionaryInput, ConfigurationDictionaryOutput>, ConfigurationDictionaryValuesUseCase>();
 
             return services;
         }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DeLimaIt.Dictionary.Application.Features.Configuration.Models
 {
-    public sealed class ConfigurationParameterGetOutput
+    public sealed class ConfigurationDictionaryGetOutput
     {
-        public ConfigurationParameterGetOutput(int id, string name)
+        public ConfigurationDictionaryGetOutput(int id, string name)
         {
             Id = id; 
             Name = name;

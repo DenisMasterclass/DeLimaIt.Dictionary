@@ -11,51 +11,51 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository
         {
             _context = context;
         }
-        public async Task<IEnumerable<ParameterEntity>> GetParametersAsync(ConfigurationParameterFilter filter, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<DictionaryEntity>> GetDictionariesAsync(ConfigurationDictionaryFilter filter, CancellationToken cancellationToken = default)
         {
             var connection = _context.Connection;
-            var configurationModelList = await connection.QueryAsync<ParameterEntity>(GetSqlParameters,filter,_context.Transaction).ConfigureAwait(false);
+            var configurationModelList = await connection.QueryAsync<DictionaryEntity>(GetSqlDictionaries,filter,_context.Transaction).ConfigureAwait(false);
             return configurationModelList;
         }
-        public async Task<List<ParameterValueEntity>> GetParametersValuesAsync(ParameterFilter filter,CancellationToken cancellationToken = default)
+        public async Task<List<DictionaryValueEntity>> GetDictionariesValuesAsync(DictionaryFilter filter,CancellationToken cancellationToken = default)
         {
             var connection = _context.Connection;
-            var parameterValueList = await connection.QueryAsync<ParameterValueEntity>(GetSqlParametersValues,filter,_context.Transaction).ConfigureAwait(false);
-            return parameterValueList.ToList();
+            var DictionaryValueList = await connection.QueryAsync<DictionaryValueEntity>(GetSqlDictionariesValues,filter,_context.Transaction).ConfigureAwait(false);
+            return DictionaryValueList.ToList();
         }
-        public async Task<int> InsertParameterValue(ParameterValueEntity parameterValueEntity, CancellationToken cancellationToken = default)
+        public async Task<int> InsertDictionaryValue(DictionaryValueEntity DictionaryValueEntity, CancellationToken cancellationToken = default)
         {
             var connection = _context.Connection;
-            var rowsAffected = await connection.ExecuteAsync(InsertSqlParameterValue, parameterValueEntity, _context.Transaction).ConfigureAwait(false);
+            var rowsAffected = await connection.ExecuteAsync(InsertSqlDictionaryValue, DictionaryValueEntity, _context.Transaction).ConfigureAwait(false);
             return rowsAffected;
         }
-        public async Task<int> UpdateParameterValue(ParameterValueEntity parameterValueEntity, CancellationToken cancellationToken = default)
+        public async Task<int> UpdateDictionaryValue(DictionaryValueEntity DictionaryValueEntity, CancellationToken cancellationToken = default)
         {
             var connection = _context.Connection;
-            var rowsAffected = await connection.ExecuteAsync(UpdateSqlParameterValue, parameterValueEntity, _context.Transaction).ConfigureAwait(false);
+            var rowsAffected = await connection.ExecuteAsync(UpdateSqlDictionaryValue, DictionaryValueEntity, _context.Transaction).ConfigureAwait(false);
             return rowsAffected;
         }
-        public async Task<int> DeleteParameterValue(ParameterValueEntity parameterValueEntity, CancellationToken cancellationToken = default)
+        public async Task<int> DeleteDictionaryValue(DictionaryValueEntity DictionaryValueEntity, CancellationToken cancellationToken = default)
         {
             var connection = _context.Connection;
-            var rowsAffected = await connection.ExecuteAsync(DeleteSqlParameterValue, parameterValueEntity, _context.Transaction).ConfigureAwait(false);
+            var rowsAffected = await connection.ExecuteAsync(DeleteSqlDictionaryValue, DictionaryValueEntity, _context.Transaction).ConfigureAwait(false);
             return rowsAffected;
         }
-        public async Task<Dictionary<string,Dictionary<string,string>>> GetAllParameters (int moduleId, CancellationToken cancellationToken = default)
+        public async Task<Dictionary<string,Dictionary<string,string>>> GetAllDictionaries (int moduleId, CancellationToken cancellationToken = default)
         {
-            Dictionary<string, Dictionary<string, string>> dicParameters = new();
-            var parameters = await this.GetParametersAsync(new ConfigurationParameterFilter(moduleId), cancellationToken);
-            foreach (var parameter in parameters)
+            Dictionary<string, Dictionary<string, string>> dicDictionaries = new();
+            var Dictionaries = await this.GetDictionariesAsync(new ConfigurationDictionaryFilter(moduleId), cancellationToken);
+            foreach (var Dictionary in Dictionaries)
             {
-                Dictionary<string, string> dicParametersValues = new();
-                dicParameters[parameter.Name] = dicParametersValues;
-                var parametersValues = await this.GetParametersValuesAsync(new ParameterFilter(parameter.Id),cancellationToken);
-                foreach (var parameterValue in parametersValues)
+                Dictionary<string, string> dicDictionariesValues = new();
+                dicDictionaries[Dictionary.Name] = dicDictionariesValues;
+                var DictionariesValues = await this.GetDictionariesValuesAsync(new DictionaryFilter(Dictionary.Id),cancellationToken);
+                foreach (var DictionaryValue in DictionariesValues)
                 {
-                    dicParametersValues[parameterValue.Key] = parameterValue.Value;
+                    dicDictionariesValues[DictionaryValue.Key] = DictionaryValue.Value;
                 }
             }
-            return dicParameters;
+            return dicDictionaries;
         }
     }
 }

@@ -11,7 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSqlServerDictionary(conn, "30");
-builder.Services.AddConfigurationParameters();
+builder.Services.AddConfigurationDictionaries();
 
 
 

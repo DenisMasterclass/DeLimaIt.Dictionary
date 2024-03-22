@@ -8,19 +8,19 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Sql
 {
     internal static class ConfigurationRepositorySQL
     {
-        internal const string GetSqlParameters = @"SELECT COD_PARAMETRO AS Id,
+        internal const string GetSqlDictionaries = @"SELECT COD_PARAMETRO AS Id,
                                                     NOM_PARAMETRO AS Name
                                                     FROM CONFIGURACAO_PARAMETRO P WITH(NOLOCK)
                                                     WHERE P.COD_MODULO = @ModuleId";
 
-        internal const string GetSqlParametersValues = @"SELECT COD_PARAMETRO 'ParameterId',
+        internal const string GetSqlDictionariesValues = @"SELECT COD_PARAMETRO 'DictionaryId',
                                                         DSC_CHAVE 'Key',
                                                         DSC_VALOR 'Value'
                                                         FROM CONFIGURACAO_CHAVE P 
                                                         WHERE P.COD_PARAMETRO = @Id
                                                         ";
 
-        internal const string InsertSqlParameterValue = @"INSERT INTO CONFIGURACAO_CHAVE
+        internal const string InsertSqlDictionaryValue = @"INSERT INTO CONFIGURACAO_CHAVE
                                                     (
                                                         COD_PARAMETRO,
                                                         DSC_CHAVE,
@@ -28,18 +28,18 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Sql
                                                     )
                                                     VALUES
                                                     (
-                                                        @ParameterId,
+                                                        @DictionaryId,
                                                         @Key,
                                                         @Value
                                                     )
                                                     ";
 
-        internal const string UpdateSqlParameterValue = @"UPDATE CONFIGURACAO_CHAVE 
+        internal const string UpdateSqlDictionaryValue = @"UPDATE CONFIGURACAO_CHAVE 
                                 SET DSC_VALOR = @Value 
-                                WHERE COD_PARAMETRO = @ParameterId AND DSC_CHAVE = @Key
+                                WHERE COD_PARAMETRO = @DictionaryId AND DSC_CHAVE = @Key
                                 ";
-        internal const string DeleteSqlParameterValue = @"DELETE FROM CONFIGURACAO_CHAVE 
-                                                       WHERE COD_PARAMETRO = @ParameterId 
+        internal const string DeleteSqlDictionaryValue = @"DELETE FROM CONFIGURACAO_CHAVE 
+                                                       WHERE COD_PARAMETRO = @DictionaryId 
                                                        AND DSC_CHAVE = @Key
                                                         ";
 

@@ -1,8 +1,8 @@
 ﻿namespace DeLimaIt.Dictionary.Application.Features.Configuration.Models
 {
-    public sealed class ConfigurationParameterValueGetOutput
+    public sealed class ConfigurationDictionaryValueGetOutput
     {
-        public ConfigurationParameterValueGetOutput(string key, string value)
+        public ConfigurationDictionaryValueGetOutput(string key, string value)
         {
             Key = key;
             Value = value;

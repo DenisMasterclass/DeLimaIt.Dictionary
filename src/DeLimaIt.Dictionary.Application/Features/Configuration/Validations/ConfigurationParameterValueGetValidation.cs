@@ -3,15 +3,15 @@ using FluentValidation;
 
 namespace DeLimaIt.Dictionary.Application.Features.Configuration.Validations
 {
-    public sealed class ConfigurationParameterValueGetValidation : AbstractValidator<ConfigurationParameterValueGetInput>
+    public sealed class ConfigurationDictionaryValueGetValidation : AbstractValidator<ConfigurationDictionaryValueGetInput>
     {
-        public ConfigurationParameterValueGetValidation()
+        public ConfigurationDictionaryValueGetValidation()
         {
             ValidateValue();
         }
         public void ValidateValue()
         {
-            RuleFor(c => c.ParameterId)
+            RuleFor(c => c.DictionaryId)
                 .GreaterThanOrEqualTo(0).WithMessage("Type invalid. The value must be greater than 0!");
         }
     }

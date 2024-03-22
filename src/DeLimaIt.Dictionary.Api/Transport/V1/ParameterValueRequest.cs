@@ -2,14 +2,14 @@
 
 namespace DeLimaIt.Dictionary.Api.Transport.V1
 {
-    public sealed class ParameterValueRequest
+    public sealed class DictionaryValueRequest
     {
-        public ParameterValueRequest()
+        public DictionaryValueRequest()
         {
                 
         }
 
-        public ParameterValueRequest(string key, string value)
+        public DictionaryValueRequest(string key, string value)
         {
             Key = key;
             Value = value;

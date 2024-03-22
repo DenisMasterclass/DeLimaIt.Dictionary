@@ -9,20 +9,20 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Models
 {
     public sealed class ConfigurationGetInput : IRequest<ConfigurationGetOutput>
     {
-        public ConfigurationGetInput(int moduleId, string parameterId)
+        public ConfigurationGetInput(int moduleId, string DictionaryId)
         {
             ModuleId = moduleId;
-            ParameterId = parameterId;
+            DictionaryId = DictionaryId;
         }
 
-        public ConfigurationGetInput(int moduleId, string parameterId, Guid correlationId, Guid transactionId) : this(moduleId, parameterId)
+        public ConfigurationGetInput(int moduleId, string DictionaryId, Guid correlationId, Guid transactionId) : this(moduleId, DictionaryId)
         {
             CorrelationId = correlationId == Guid.Empty ? Guid.NewGuid() : correlationId;
             TransactionId = transactionId == Guid.Empty ? Guid.NewGuid() : transactionId; ;
         }
 
         public int ModuleId { get; set; }
-        public string ParameterId { get; set; }
+        public string DictionaryId { get; set; }
         public Guid CorrelationId { get; set; }
         public Guid TransactionId { get; set; }
 

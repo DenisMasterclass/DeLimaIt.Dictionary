@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DeLimaIt.Dictionary.Application.Features.Configuration.Models
 {
-    public sealed class ConfigurationParameterOutput
+    public sealed class ConfigurationDictionaryOutput
     {
         public int RecordsAffect { get; set; }
         public string Message { get; set; }

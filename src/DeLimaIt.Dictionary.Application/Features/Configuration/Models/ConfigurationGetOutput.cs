@@ -3,7 +3,7 @@
     public sealed class ConfigurationGetOutput
     {
         public int ModuleId { get; set; }
-        public string ParameterId { get; set; }
-        public IList<ParameterGetOutput> Parameters { get; set; }
+        public string DictionaryId { get; set; }
+        public IList<DictionaryGetOutput> Dictionaries { get; set; }
     }
 }

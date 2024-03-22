@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Entities
 {
-    public class ConfigurationParameterFilter
+    public class ConfigurationDictionaryFilter
     {
-        public ConfigurationParameterFilter()
+        public ConfigurationDictionaryFilter()
         {
             
         }
 
-        public ConfigurationParameterFilter(int moduleId)
+        public ConfigurationDictionaryFilter(int moduleId)
         {
             ModuleId = moduleId;
         }

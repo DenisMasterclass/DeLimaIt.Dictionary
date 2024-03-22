@@ -10,39 +10,39 @@ namespace DeLimaIt.Dictionary.Api.Controllers
     [ApiController]
     public class ConfigurationController : ControllerBase
     {
-        private readonly UseCaseHandlerBase<ConfigurationParameterGetInput, List<ConfigurationParameterGetOutput>> _configurationParameterGetHandler;
-        private readonly UseCaseHandlerBase<ConfigurationParameterValueGetInput, List<ConfigurationParameterValueGetOutput>> _configurationParameterValueGetHandler;
-        private readonly UseCaseHandlerBase<ConfigurationParameterInput, ConfigurationParameterOutput> _configurationParameterHandler;
+        private readonly UseCaseHandlerBase<ConfigurationDictionaryGetInput, List<ConfigurationDictionaryGetOutput>> _configurationDictionaryGetHandler;
+        private readonly UseCaseHandlerBase<ConfigurationDictionaryValueGetInput, List<ConfigurationDictionaryValueGetOutput>> _configurationDictionaryValueGetHandler;
+        private readonly UseCaseHandlerBase<ConfigurationDictionaryInput, ConfigurationDictionaryOutput> _configurationDictionaryHandler;
 
-        public ConfigurationController(UseCaseHandlerBase<ConfigurationParameterGetInput, List<ConfigurationParameterGetOutput>> configurationParameterGetHandler, UseCaseHandlerBase<ConfigurationParameterValueGetInput, List<ConfigurationParameterValueGetOutput>> configurationParameterValueGetHandler, UseCaseHandlerBase<ConfigurationParameterInput, ConfigurationParameterOutput> configurationParameterHandler)
+        public ConfigurationController(UseCaseHandlerBase<ConfigurationDictionaryGetInput, List<ConfigurationDictionaryGetOutput>> configurationDictionaryGetHandler, UseCaseHandlerBase<ConfigurationDictionaryValueGetInput, List<ConfigurationDictionaryValueGetOutput>> configurationDictionaryValueGetHandler, UseCaseHandlerBase<ConfigurationDictionaryInput, ConfigurationDictionaryOutput> configurationDictionaryHandler)
         {
-            _configurationParameterGetHandler = configurationParameterGetHandler;
-            _configurationParameterValueGetHandler = configurationParameterValueGetHandler;
-            _configurationParameterHandler = configurationParameterHandler;
+            _configurationDictionaryGetHandler = configurationDictionaryGetHandler;
+            _configurationDictionaryValueGetHandler = configurationDictionaryValueGetHandler;
+            _configurationDictionaryHandler = configurationDictionaryHandler;
         }
 
-        [HttpGet("Parameters/{moduleId}", Name = "GetParameters")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ConfigurationParameterGetOutput>))]
+        [HttpGet("Dictionaries/{moduleId}", Name = "GetDictionaries")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ConfigurationDictionaryGetOutput>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetParameters([FromRoute] int moduleId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetDictionaries([FromRoute] int moduleId, CancellationToken cancellationToken)
         {
-            var input = new ConfigurationParameterGetInput(moduleId);
-            var output = await _configurationParameterGetHandler.ExecuteAsync(input, cancellationToken);
+            var input = new ConfigurationDictionaryGetInput(moduleId);
+            var output = await _configurationDictionaryGetHandler.ExecuteAsync(input, cancellationToken);
             if (output.IsValid)
             {
                 return Ok(output.GetResult());
             }
             return BadRequest(output);
         }
-        [HttpGet("Parameters/Values/{parameterId}", Name = "GetParameterValues")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ConfigurationParameterValueGetOutput>))]
+        [HttpGet("Dictionaries/Values/{DictionaryId}", Name = "GetDictionaryValues")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ConfigurationDictionaryValueGetOutput>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetParameterValues([FromRoute] int parameterId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetDictionaryValues([FromRoute] int DictionaryId, CancellationToken cancellationToken)
         {
-            var input = new ConfigurationParameterValueGetInput(parameterId);
-            var output = await _configurationParameterValueGetHandler.ExecuteAsync(input, cancellationToken);
+            var input = new ConfigurationDictionaryValueGetInput(DictionaryId);
+            var output = await _configurationDictionaryValueGetHandler.ExecuteAsync(input, cancellationToken);
             if (output.IsValid)
             {
                 return Ok(output.GetResult());
@@ -51,42 +51,42 @@ namespace DeLimaIt.Dictionary.Api.Controllers
         }
 
 
-        [HttpDelete("Parameters/Values/{parameterId}/{parameterValueKey}", Name = "DeleteParameterValues")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ConfigurationParameterOutput>))]
+        [HttpDelete("Dictionaries/Values/{DictionaryId}/{DictionaryValueKey}", Name = "DeleteDictionaryValues")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ConfigurationDictionaryOutput>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteParameterValues([FromRoute] int parameterId, [FromRoute] string parameterValueKey, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteDictionaryValues([FromRoute] int DictionaryId, [FromRoute] string DictionaryValueKey, CancellationToken cancellationToken)
         {
-            var input = new ConfigurationParameterInput(OperationType.Delete, parameterId, parameterValueKey, "");
-            var output = await _configurationParameterHandler.ExecuteAsync(input, cancellationToken);
+            var input = new ConfigurationDictionaryInput(OperationType.Delete, DictionaryId, DictionaryValueKey, "");
+            var output = await _configurationDictionaryHandler.ExecuteAsync(input, cancellationToken);
             if (output.IsValid)
             {
                 return Ok(output.GetResult());
             }
             return BadRequest(output);
         }
-        [HttpPut("Parameters/Values/{parameterId}", Name = "UpdateParameterValues")]
+        [HttpPut("Dictionaries/Values/{DictionaryId}", Name = "UpdateDictionaryValues")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateParameterValues([FromRoute] int parameterId, [FromBody] ParameterValueRequest parameter, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateDictionaryValues([FromRoute] int DictionaryId, [FromBody] DictionaryValueRequest Dictionary, CancellationToken cancellationToken)
         {
-            var input = new ConfigurationParameterInput(OperationType.Update, parameterId, parameter.Key ,  parameter.Value);
-            var output = await _configurationParameterHandler.ExecuteAsync(input, cancellationToken);
+            var input = new ConfigurationDictionaryInput(OperationType.Update, DictionaryId, Dictionary.Key ,  Dictionary.Value);
+            var output = await _configurationDictionaryHandler.ExecuteAsync(input, cancellationToken);
             if (output.IsValid)
             {
                 return Ok(output.GetResult());
             }
             return BadRequest(output);
         }
-        [HttpPost("Parameters/Values/{parameterId}", Name = "InsertParameterValues")]
+        [HttpPost("Dictionaries/Values/{DictionaryId}", Name = "InsertDictionaryValues")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> InsertParameterValues([FromRoute] int parameterId, [FromBody] ParameterValueRequest parameter, CancellationToken cancellationToken)
+        public async Task<IActionResult> InsertDictionaryValues([FromRoute] int DictionaryId, [FromBody] DictionaryValueRequest Dictionary, CancellationToken cancellationToken)
         {
-            var input = new ConfigurationParameterInput(OperationType.Insert, parameterId, parameter.Key, parameter.Value);
-            var output = await _configurationParameterHandler.ExecuteAsync(input, cancellationToken);
+            var input = new ConfigurationDictionaryInput(OperationType.Insert, DictionaryId, Dictionary.Key, Dictionary.Value);
+            var output = await _configurationDictionaryHandler.ExecuteAsync(input, cancellationToken);
             if (output.IsValid)
             {
                 return Ok(output.GetResult());

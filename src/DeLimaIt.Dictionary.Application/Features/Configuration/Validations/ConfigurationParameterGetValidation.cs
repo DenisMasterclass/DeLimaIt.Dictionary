@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace DeLimaIt.Dictionary.Application.Features.Configuration.Validations
 {
-    public sealed class ConfigurationParameterGetValidation : AbstractValidator<ConfigurationParameterGetInput>
+    public sealed class ConfigurationDictionaryGetValidation : AbstractValidator<ConfigurationDictionaryGetInput>
     {
-        public ConfigurationParameterGetValidation()
+        public ConfigurationDictionaryGetValidation()
         {
             ValidateValue();
         }

@@ -6,15 +6,15 @@
         {
             
         }
-        public ConfigurationEntity(int moduleId,string parameterId,IList<ParameterEntity> parameters)
+        public ConfigurationEntity(int moduleId,string DictionaryId,IList<DictionaryEntity> Dictionaries)
         {
             ModuleId = moduleId;
-            ParameterId = parameterId;
+            DictionaryId = DictionaryId;
         }
 
         public int ModuleId { get; set; }
-        public string ParameterId { get; set; }
-        public string ParameterKey { get; set; }
-        public string ParameterValue { get; set; }
+        public string DictionaryId { get; set; }
+        public string DictionaryKey { get; set; }
+        public string DictionaryValue { get; set; }
     }
 }

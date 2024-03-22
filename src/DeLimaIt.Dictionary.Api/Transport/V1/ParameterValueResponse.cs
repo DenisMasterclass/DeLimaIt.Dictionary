@@ -2,14 +2,14 @@
 
 namespace DeLimaIt.Dictionary.Api.Transport.V1
 {
-    public class ParameterValueResponse
+    public class DictionaryValueResponse
     {
-        public ParameterValueResponse()
+        public DictionaryValueResponse()
         {
 
         }
 
-        public ParameterValueResponse(int key, string value)
+        public DictionaryValueResponse(int key, string value)
         {
             Key = key;
             Value = value;

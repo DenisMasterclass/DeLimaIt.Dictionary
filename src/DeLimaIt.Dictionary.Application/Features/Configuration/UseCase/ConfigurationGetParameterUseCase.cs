@@ -6,24 +6,24 @@ using DelimaIt.Core.UseCases;
 using DelimaIt.Core.UseCases.Outputs;
 namespace DeLimaIt.Dictionary.Application.Features.Configuration.UseCase
 {
-    public sealed class ConfigurationGetParameterUseCase : UseCaseHandlerBase<ConfigurationParameterGetInput, List<ConfigurationParameterGetOutput>>
+    public sealed class ConfigurationGetDictionaryUseCase : UseCaseHandlerBase<ConfigurationDictionaryGetInput, List<ConfigurationDictionaryGetOutput>>
     {
         private readonly IConfigurationRepository _configurationRepository;
-        private readonly ILogger<ConfigurationGetParameterUseCase> _logger;
+        private readonly ILogger<ConfigurationGetDictionaryUseCase> _logger;
 
-        public ConfigurationGetParameterUseCase(IConfigurationRepository configurationRepository, IValidator<ConfigurationParameterGetInput> validator, ILogger<ConfigurationGetParameterUseCase> logger)
+        public ConfigurationGetDictionaryUseCase(IConfigurationRepository configurationRepository, IValidator<ConfigurationDictionaryGetInput> validator, ILogger<ConfigurationGetDictionaryUseCase> logger)
         :base(logger, validator)
         {
             _configurationRepository = configurationRepository;
             _logger = logger;
         }
-        protected override async Task<Output<List<ConfigurationParameterGetOutput>>> HandleAsync (ConfigurationParameterGetInput request, CancellationToken cancellationToken)
+        protected override async Task<Output<List<ConfigurationDictionaryGetOutput>>> HandleAsync (ConfigurationDictionaryGetInput request, CancellationToken cancellationToken)
         {
-            var output = new Output<List<ConfigurationParameterGetOutput>>();
-            var filter = new ConfigurationParameterFilter(request.ModuleId);
-            var parametersModelList = await _configurationRepository.GetParametersAsync(filter, cancellationToken);
-            var parameterList = parametersModelList.Select(c => new ConfigurationParameterGetOutput(c.Id, c.Name)).ToList();
-            output.AddResult(parameterList);
+            var output = new Output<List<ConfigurationDictionaryGetOutput>>();
+            var filter = new ConfigurationDictionaryFilter(request.ModuleId);
+            var DictionariesModelList = await _configurationRepository.GetDictionariesAsync(filter, cancellationToken);
+            var DictionaryList = DictionariesModelList.Select(c => new ConfigurationDictionaryGetOutput(c.Id, c.Name)).ToList();
+            output.AddResult(DictionaryList);
 
             return output;
         }

@@ -2,20 +2,20 @@
 
 namespace DeLimaIt.Dictionary.Application.Features.Configuration.Models
 {
-    public sealed class ConfigurationParameterValueGetInput : IRequest<List<ConfigurationParameterValueGetOutput>>
+    public sealed class ConfigurationDictionaryValueGetInput : IRequest<List<ConfigurationDictionaryValueGetOutput>>
     {
-        public ConfigurationParameterValueGetInput(int parameterId)
+        public ConfigurationDictionaryValueGetInput(int DictionaryId)
         {
-            ParameterId = parameterId;
+            DictionaryId = DictionaryId;
         }
 
-        public ConfigurationParameterValueGetInput(int parameterId, Guid correlationId, Guid transactionId) : this(parameterId)
+        public ConfigurationDictionaryValueGetInput(int DictionaryId, Guid correlationId, Guid transactionId) : this(DictionaryId)
         {
             CorrelationId = correlationId == Guid.Empty ? Guid.NewGuid() : correlationId;
             TransactionId = transactionId == Guid.Empty ? Guid.NewGuid() : transactionId;
         }
 
-        public int ParameterId { get; set; }
+        public int DictionaryId { get; set; }
         public Guid CorrelationId { get; set; }
         public Guid TransactionId { get; set; }
     }

@@ -2,14 +2,14 @@
 
 namespace DeLimaIt.Dictionary.Api.Transport.V1
 {
-    public sealed class ParameterResponse
+    public sealed class DictionaryResponse
     {
-        public ParameterResponse()
+        public DictionaryResponse()
         {
                 
         }
 
-        public ParameterResponse(int id, string name)
+        public DictionaryResponse(int id, string name)
         {
             Id = id;
             Name = name;
