@@ -23,9 +23,8 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.UseCase
         protected override async Task<Output<List<ConfigurationModuleOutput>>> HandleAsync(ConfigurationModuleInput request, CancellationToken cancellationToken)
         {
             var output = new Output<List<ConfigurationModuleOutput>>();
-            var filter = new ConfigurationDictionaryFilter(request.Entity.ModuleId);
-            var ModuleModelList = await _configurationRepository.GetModulesAsync(filter, cancellationToken);
-            output.AddResult((List<ConfigurationModuleOutput>)ModuleModelList);
+            var ModuleModelList = await _configurationRepository.GetModulesAsync(cancellationToken);
+            output.AddResult(ModuleModelList);
 
             return output;
         }

@@ -4,6 +4,7 @@ using DelimaIt.Core.UseCases;
 using DeLimaIt.Dictionary.Application.Features.Configuration.Models;
 using DeLimaIt.Dictionary.Api.Transport.V1;
 using DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Entities;
+using System.Reflection;
 
 namespace DeLimaIt.Dictionary.Api.Controllers
 {
@@ -100,8 +101,11 @@ namespace DeLimaIt.Dictionary.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ConfigurationModuleOutput>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetModules([FromRoute] ConfigurationModuleInput input, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetModules([FromRoute] int moduleId, CancellationToken cancellationToken)
         {
+            var input = new ConfigurationModuleInput();
+            input.Entity = new ConfigurationModuleEntity(); 
+            input.Entity.ModuleId = moduleId;
             var output = await _configurationModuleHandler.ExecuteAsync(input, cancellationToken);
             if (output.IsValid)
             {

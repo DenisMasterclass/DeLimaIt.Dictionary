@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using DeLimaIt.Dictionary.Application.Features.Configuration.Models;
 using DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Entities;
 using DeLimaIt.Dictionary.Application.Shared;
 using static DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Sql.ConfigurationRepositorySQL;
@@ -57,11 +58,11 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository
             }
             return dicDictionaries;
         }
-        public async Task<IEnumerable<ConfigurationModuleEntity>> GetModulesAsync(ConfigurationDictionaryFilter filter, CancellationToken cancellationToken = default)
+        public async Task<List<ConfigurationModuleOutput>> GetModulesAsync(CancellationToken cancellationToken = default)
         {
             var connection = _context.Connection;
-            var configurationModelList = await connection.QueryAsync<ConfigurationModuleEntity>(SelectSqlModules, filter, _context.Transaction).ConfigureAwait(false);
-            return configurationModelList;
+            var configurationModelList = await connection.QueryAsync<ConfigurationModuleOutput>(SelectSqlModules, _context.Transaction).ConfigureAwait(false);
+            return (List<ConfigurationModuleOutput>)configurationModelList;
         }
         public async Task<int> InsertModule(ConfigurationModuleEntity configurationModuleEntity, CancellationToken cancellationToken = default)
         {

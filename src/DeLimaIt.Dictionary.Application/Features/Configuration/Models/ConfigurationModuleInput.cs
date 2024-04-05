@@ -7,6 +7,10 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Models
 {
     public class ConfigurationModuleInput : IRequest<List<ConfigurationModuleOutput>>
     {
+        public ConfigurationModuleInput()
+        {
+                
+        }
         public ConfigurationModuleInput(ConfigurationModuleEntity entity)
         {
             Entity = entity;            
