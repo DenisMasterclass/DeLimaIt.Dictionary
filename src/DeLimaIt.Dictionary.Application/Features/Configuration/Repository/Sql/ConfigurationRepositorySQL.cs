@@ -36,12 +36,28 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Sql
 
         internal const string UpdateSqlDictionaryValue = @"UPDATE CONFIGURACAO_CHAVE 
                                 SET DSC_VALOR = @Value 
-                                WHERE COD_PARAMETRO = @DictionaryId AND DSC_CHAVE = @Key
-                                ";
+                                WHERE COD_PARAMETRO = @DictionaryId AND DSC_CHAVE = @Key";
+
         internal const string DeleteSqlDictionaryValue = @"DELETE FROM CONFIGURACAO_CHAVE 
                                                        WHERE COD_PARAMETRO = @DictionaryId 
-                                                       AND DSC_CHAVE = @Key
-                                                        ";
+                                                       AND DSC_CHAVE = @Key";
 
+        internal const string SelectSqlModules = @"SELECT COD_MODULO ModuleId
+                                                  ,NOM_MODULO ModuleName
+                                                   FROM CONFIGURACAO_MODULO";
+
+        internal const string UpdateSqlModules = @" UPDATE CONFIGURACAO_MODULO
+                                                    SET NOM_MODULO = @ModuleName 
+                                                    WHERE COD_MODULO = @ModuleId";
+
+        internal const string InsertSqlModules = @" INSERT INTO CONFIGURACAO_MODULO
+                                                    (
+                                                    NOM_MODULO
+                                                    )
+                                                    VALUES
+                                                    (
+                                                    @ModuleName
+                                                    )";
+        internal const string DeleteSqlModules = @"DELETE FROM CONFIGURACAO_MODULO WHERE COD_MODULO = @ModuleId";
     }
 }

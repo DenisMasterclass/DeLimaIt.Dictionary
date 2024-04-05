@@ -17,10 +17,13 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.DependencyInjec
             services.AddSingleton<IValidator<ConfigurationDictionaryGetInput>, ConfigurationDictionaryGetValidation>();
             services.AddSingleton<IValidator<ConfigurationDictionaryInput>, ConfigurationDictionaryValuesValidation>();
             services.AddSingleton<IValidator<ConfigurationDictionaryValueGetInput>, ConfigurationDictionaryValueGetValidation>();
+            services.AddSingleton<IValidator<ConfigurationModuleInput>, ConfigurationModuleGetValidation>();
 
             services.AddScoped<UseCaseHandlerBase<ConfigurationDictionaryGetInput, List<ConfigurationDictionaryGetOutput>>, ConfigurationGetDictionaryUseCase>();
             services.AddScoped<UseCaseHandlerBase<ConfigurationDictionaryValueGetInput, List<ConfigurationDictionaryValueGetOutput>>, ConfigurationGetDictionaryValueUseCase>();
             services.AddScoped<UseCaseHandlerBase<ConfigurationDictionaryInput, ConfigurationDictionaryOutput>, ConfigurationDictionaryValuesUseCase>();
+
+            services.AddScoped<UseCaseHandlerBase<ConfigurationModuleInput, List<ConfigurationModuleOutput>>, ConfigurationGetModuleUseCase>();
 
             return services;
         }

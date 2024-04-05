@@ -10,16 +10,13 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Enti
     {
         public ConfigurationFilterEntity()
         {
-
         }
 
-        public ConfigurationFilterEntity(int moduleId, string DictionaryId)
+        public ConfigurationFilterEntity(int moduleId)
         {
             ModuleId = moduleId;
-            DictionaryId = DictionaryId;
         }
 
         public int ModuleId { get; set; }
-        public string DictionaryId { get; set; }
     }
 }

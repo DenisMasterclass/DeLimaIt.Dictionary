@@ -57,5 +57,29 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository
             }
             return dicDictionaries;
         }
+        public async Task<IEnumerable<ConfigurationModuleEntity>> GetModulesAsync(ConfigurationDictionaryFilter filter, CancellationToken cancellationToken = default)
+        {
+            var connection = _context.Connection;
+            var configurationModelList = await connection.QueryAsync<ConfigurationModuleEntity>(SelectSqlModules, filter, _context.Transaction).ConfigureAwait(false);
+            return configurationModelList;
+        }
+        public async Task<int> InsertModule(ConfigurationModuleEntity configurationModuleEntity, CancellationToken cancellationToken = default)
+        {
+            var connection = _context.Connection;
+            var rowsAffected = await connection.ExecuteAsync(InsertSqlModules, configurationModuleEntity, _context.Transaction).ConfigureAwait(false);
+            return rowsAffected;
+        }
+        public async Task<int> UpdateModule(ConfigurationModuleEntity configurationModuleEntity, CancellationToken cancellationToken = default)
+        {
+            var connection = _context.Connection;
+            var rowsAffected = await connection.ExecuteAsync(UpdateSqlModules, configurationModuleEntity, _context.Transaction).ConfigureAwait(false);
+            return rowsAffected;
+        }
+        public async Task<int> DeleteModule(ConfigurationModuleEntity configurationModuleEntity, CancellationToken cancellationToken = default)
+        {
+            var connection = _context.Connection;
+            var rowsAffected = await connection.ExecuteAsync(DeleteSqlModules, configurationModuleEntity, _context.Transaction).ConfigureAwait(false);
+            return rowsAffected;
+        }
     }
 }

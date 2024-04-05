@@ -5,7 +5,7 @@ using DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Entities
 
 namespace DeLimaIt.Dictionary.Application.Features.Configuration.Models
 {
-    public class ConfigurationModuleInput : IRequest<ConfigurationModuleOutput>
+    public class ConfigurationModuleInput : IRequest<List<ConfigurationModuleOutput>>
     {
         public ConfigurationModuleInput(ConfigurationModuleEntity entity)
         {

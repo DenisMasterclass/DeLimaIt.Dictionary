@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using DelimaIt.Core.UseCases;
 using DeLimaIt.Dictionary.Application.Features.Configuration.Models;
 using DeLimaIt.Dictionary.Api.Transport.V1;
+using DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Entities;
 
 namespace DeLimaIt.Dictionary.Api.Controllers
 {
@@ -13,12 +14,14 @@ namespace DeLimaIt.Dictionary.Api.Controllers
         private readonly UseCaseHandlerBase<ConfigurationDictionaryGetInput, List<ConfigurationDictionaryGetOutput>> _configurationDictionaryGetHandler;
         private readonly UseCaseHandlerBase<ConfigurationDictionaryValueGetInput, List<ConfigurationDictionaryValueGetOutput>> _configurationDictionaryValueGetHandler;
         private readonly UseCaseHandlerBase<ConfigurationDictionaryInput, ConfigurationDictionaryOutput> _configurationDictionaryHandler;
+        private readonly UseCaseHandlerBase<ConfigurationModuleInput,List<ConfigurationModuleOutput>> _configurationModuleHandler;
 
-        public ConfigurationController(UseCaseHandlerBase<ConfigurationDictionaryGetInput, List<ConfigurationDictionaryGetOutput>> configurationDictionaryGetHandler, UseCaseHandlerBase<ConfigurationDictionaryValueGetInput, List<ConfigurationDictionaryValueGetOutput>> configurationDictionaryValueGetHandler, UseCaseHandlerBase<ConfigurationDictionaryInput, ConfigurationDictionaryOutput> configurationDictionaryHandler)
+        public ConfigurationController(UseCaseHandlerBase<ConfigurationDictionaryGetInput, List<ConfigurationDictionaryGetOutput>> configurationDictionaryGetHandler, UseCaseHandlerBase<ConfigurationDictionaryValueGetInput, List<ConfigurationDictionaryValueGetOutput>> configurationDictionaryValueGetHandler, UseCaseHandlerBase<ConfigurationDictionaryInput, ConfigurationDictionaryOutput> configurationDictionaryHandler, UseCaseHandlerBase<ConfigurationModuleInput, List<ConfigurationModuleOutput>> configurationModuleHandler)
         {
             _configurationDictionaryGetHandler = configurationDictionaryGetHandler;
             _configurationDictionaryValueGetHandler = configurationDictionaryValueGetHandler;
             _configurationDictionaryHandler = configurationDictionaryHandler;
+            _configurationModuleHandler = configurationModuleHandler;
         }
 
         [HttpGet("Dictionaries/{moduleId}", Name = "GetDictionaries")]
@@ -87,6 +90,19 @@ namespace DeLimaIt.Dictionary.Api.Controllers
         {
             var input = new ConfigurationDictionaryInput(OperationType.Insert, DictionaryId, Dictionary.Key, Dictionary.Value);
             var output = await _configurationDictionaryHandler.ExecuteAsync(input, cancellationToken);
+            if (output.IsValid)
+            {
+                return Ok(output.GetResult());
+            }
+            return BadRequest(output);
+        }
+        [HttpGet("Modules/{moduleId}", Name = "GetModules")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ConfigurationModuleOutput>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetModules([FromRoute] ConfigurationModuleInput input, CancellationToken cancellationToken)
+        {
+            var output = await _configurationModuleHandler.ExecuteAsync(input, cancellationToken);
             if (output.IsValid)
             {
                 return Ok(output.GetResult());

@@ -10,7 +10,11 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration
         Task<int> UpdateDictionaryValue(DictionaryValueEntity DictionaryValueEntity, CancellationToken cancellationToken = default);
         Task<int> DeleteDictionaryValue(DictionaryValueEntity DictionaryValueEntity, CancellationToken cancellationToken = default);
         Task<Dictionary<string, Dictionary<string, string>>> GetAllDictionaries(int moduleId, CancellationToken cancellationToken = default);
-
+        Task<IEnumerable<ConfigurationModuleEntity>> GetModulesAsync(ConfigurationDictionaryFilter filter, CancellationToken cancellationToken = default);
+        Task<int> InsertModule(ConfigurationModuleEntity configurationModuleEntity, CancellationToken cancellationToken = default);
+        Task<int> UpdateModule(ConfigurationModuleEntity configurationModuleEntity, CancellationToken cancellationToken = default);
+        Task<int> DeleteModule(ConfigurationModuleEntity configurationModuleEntity, CancellationToken cancellationToken = default);
+       
 
     }
 }
