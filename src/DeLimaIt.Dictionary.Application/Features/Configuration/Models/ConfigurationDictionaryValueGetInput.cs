@@ -4,9 +4,9 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Models
 {
     public sealed class ConfigurationDictionaryValueGetInput : IRequest<List<ConfigurationDictionaryValueGetOutput>>
     {
-        public ConfigurationDictionaryValueGetInput(int DictionaryId)
+        public ConfigurationDictionaryValueGetInput(int dictionaryId)
         {
-            DictionaryId = DictionaryId;
+            DictionaryId = dictionaryId;
         }
 
         public ConfigurationDictionaryValueGetInput(int DictionaryId, Guid correlationId, Guid transactionId) : this(DictionaryId)
