@@ -3,6 +3,7 @@ using DeLimaIt.Dictionary.Application.Shared.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 var conn = builder.Configuration.GetValue<string>("SQL_DELIMAIT_DICTIONARY_CONN_STRING");
+//string cnn = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=" + AppContext.BaseDirectory + "\\Shared\\Data\\Dictionary.mdf;Integrated Security=True";
 
 // Add services to the container.
 
