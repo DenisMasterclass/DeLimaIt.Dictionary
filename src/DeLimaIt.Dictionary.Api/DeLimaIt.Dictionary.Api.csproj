@@ -9,7 +9,7 @@
     <DockerfileContext>..\..</DockerfileContext>
     <SignAssembly>True</SignAssembly>
     <DelaySign>True</DelaySign>
-    <PublishAot>True</PublishAot>
+    <PublishAot>False</PublishAot>
     <AssemblyOriginatorKeyFile>D:\GitHub\DenisMasterClass\DeLimaIt.Dictionary\DictionayKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 

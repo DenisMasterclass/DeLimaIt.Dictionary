@@ -8,11 +8,6 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Enti
 {
     public class DictionaryEntity
     {
-        public DictionaryEntity()
-        {
-
-        }
-
         public DictionaryEntity(int id, string name)
         {
             Id = id;
