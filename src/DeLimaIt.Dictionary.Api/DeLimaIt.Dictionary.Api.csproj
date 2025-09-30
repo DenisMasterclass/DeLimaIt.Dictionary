@@ -10,7 +10,7 @@
     <SignAssembly>True</SignAssembly>
     <DelaySign>True</DelaySign>
     <PublishAot>False</PublishAot>
-    <AssemblyOriginatorKeyFile>D:\GitHub\DenisMasterClass\DeLimaIt.Dictionary\DictionayKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>D:\dev\DeLimaIt.Dictionary\DictionayKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DelimaIt.Core.UseCases\DelimaIt.Core.UseCases.csproj" />
     <ProjectReference Include="..\DeLimaIt.Dictionary.Application\DeLimaIt.Dictionary.Application.csproj" />
   </ItemGroup>
 
