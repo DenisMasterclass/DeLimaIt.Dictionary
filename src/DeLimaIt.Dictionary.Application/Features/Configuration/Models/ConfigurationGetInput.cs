@@ -12,7 +12,7 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Models
         public ConfigurationGetInput(int moduleId, string DictionaryId)
         {
             ModuleId = moduleId;
-            DictionaryId = DictionaryId;
+            this.DictionaryId = DictionaryId;
         }
 
         public ConfigurationGetInput(int moduleId, string DictionaryId, Guid correlationId, Guid transactionId) : this(moduleId, DictionaryId)

@@ -23,21 +23,33 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.UseCase
         {
             var output = new Output<ConfigurationDictionaryOutput>();
             var DictionaryValue = new DictionaryValueEntity(request.DictionaryId, request.Key, request.Value);
-            if (request.Operation == OperationType.Insert)
+            int rowsAffected;
+            string operationName;
+            switch (request.Operation)
             {
-                var rowsAffected = _configurationRepository.InsertDictionaryValue(DictionaryValue, cancellationToken);
-                _logger.LogInformation("Insert operation. Rows Affected :" + rowsAffected);
+                case OperationType.Insert:
+                    rowsAffected = await _configurationRepository.InsertDictionaryValue(DictionaryValue, cancellationToken);
+                    operationName = "Insert";
+                    break;
+                case OperationType.Update:
+                    rowsAffected = await _configurationRepository.UpdateDictionaryValue(DictionaryValue, cancellationToken);
+                    operationName = "Update";
+                    break;
+                case OperationType.Delete:
+                    rowsAffected = await _configurationRepository.DeleteDictionaryValue(DictionaryValue, cancellationToken);
+                    operationName = "Delete";
+                    break;
+                default:
+                    output.AddErrorMessages("Unsupported dictionary operation.");
+                    return output;
             }
-            if (request.Operation == OperationType.Update)
+
+            _logger.LogInformation("{Operation} operation. Rows Affected: {RowsAffected}", operationName, rowsAffected);
+            output.AddResult(new ConfigurationDictionaryOutput
             {
-                var rowsAffected = _configurationRepository.UpdateDictionaryValue(DictionaryValue, cancellationToken);
-                _logger.LogInformation("Update operation. Rows Affected :" + rowsAffected);
-            }
-            if (request.Operation == OperationType.Delete)
-            {
-                var rowsAffected = _configurationRepository.DeleteDictionaryValue(DictionaryValue, cancellationToken);
-                _logger.LogInformation("Delete operation. Rows Affected :" + rowsAffected);
-            }
+                RecordsAffect = rowsAffected,
+                Message = $"{operationName} completed."
+            });
             return output;
         }
     }

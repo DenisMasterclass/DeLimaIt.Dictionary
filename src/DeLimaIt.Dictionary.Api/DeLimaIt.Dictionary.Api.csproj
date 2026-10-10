@@ -10,7 +10,7 @@
     <SignAssembly>True</SignAssembly>
     <DelaySign>True</DelaySign>
     <PublishAot>False</PublishAot>
-    <AssemblyOriginatorKeyFile>D:\dev\DeLimaIt.Dictionary\DictionayKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\DictionayKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>

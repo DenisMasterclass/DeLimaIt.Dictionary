@@ -8,9 +8,10 @@ namespace DelimaIt.Core.UseCases.Outputs
 {
     public class Output<T> where T : notnull
     {
-        private List<string> _messages;
-        private List<string> _errorMessages;
-        private T _result;
+        private List<string> _messages = new();
+        private List<string> _errorMessages = new();
+        private T _result = default!;
+        private bool _hasResult;
         public IReadOnlyCollection<string> ErrorMessages => GetMessages(_errorMessages);
         public bool IsValid { get; protected set; }
         public IReadOnlyCollection<string> Messages => GetMessages(_messages);
@@ -24,21 +25,18 @@ namespace DelimaIt.Core.UseCases.Outputs
             AddResult(result);
         }
 
-        public Output(ValidationResult validationResult)
+        public Output(ValidationResult validationResult) : this()
         {
             ProcessValidationResult(validationResult);
         }
 
-        public Output(IEnumerable<ValidationResult> validationResult)
+        public Output(IEnumerable<ValidationResult> validationResult) : this()
         {
+            ArgumentNullException.ThrowIfNull(validationResult);
             ProcessValidationResult(validationResult.ToArray());
         }
         private static IReadOnlyCollection<string> GetMessages(List<string> messages)
         {
-            if (messages == null)
-            {
-                return (IReadOnlyCollection<string>)(object)Array.Empty<string>();
-            }
             return messages.AsReadOnly();
         }
         public static void CheckValidationResult(ValidationResult validationResult)
@@ -62,68 +60,33 @@ namespace DelimaIt.Core.UseCases.Outputs
                 throw new MessageNullOrEmptyException("Error while trying to add string to Message Collection. It is null or empty, please verify.");
             }
         }
-        private void ProcessValidationResults(params ValidationResult[] validationResults)
-        {
-            foreach (ValidationResult validationResult in validationResults)
-            {
-                CheckValidationResult(validationResult);
-                AddValidationResult(validationResult);
-            }
-            VerifyValidity();
-        }
         private void VerifyErrorsMessages(ValidationResult validationResult)
         {
-            CreateErrorMessagesWhenThereIsNone();
             _errorMessages.AddRange(validationResult.Errors.Select((ValidationFailure e) => e.ErrorMessage).ToList());
         }
 
         protected virtual void VerifyValidity()
         {
-            if (ErrorMessages == null)
-            {
-                IsValid = true;
-            }
-            else
-            {
-                IsValid = ErrorMessages.Count == 0;
-            }
+            IsValid = IsValid && ErrorMessages.Count == 0;
         }
         public void AddErrorMessages(params string[] messages)
         {
-            CreateErrorMessagesWhenThereIsNone();
             foreach (string text in messages)
             {
                 VerifyErrorMessage(text);
                 _errorMessages.Add(text);
+                IsValid = false;
             }
-            VerifyValidity();
         }
-        public void AddMessages(string messages)
-        {
-            AddMessages(messages);
-        }
+        public void AddMessages(string messages) => AddMessages(new[] { messages });
         public void AddMessages(params string[] messages)
         {
-            CreateErrorMessagesWhenThereIsNone();
             foreach (string text in messages)
             {
                 VerifyMessage(text);
                 _messages.Add(text);
             }
-            VerifyValidity();
         }
-
-        private void CreateErrorMessagesWhenThereIsNone()
-        {
-            if (_messages == null)
-            {
-                _messages = new List<string>();
-            }
-        }
-
-
-
-
 
         public void AddResult(T result)
         {
@@ -132,13 +95,15 @@ namespace DelimaIt.Core.UseCases.Outputs
                 throw new ResultNullException("Result object is null, please verify");
             }
             _result = result;
+            _hasResult = true;
         }
 
         public virtual void AddValidationResult(ValidationResult validationResult)
         {
             CheckValidationResult(validationResult);
-            IsValid = validationResult.IsValid;
+            IsValid = IsValid && validationResult.IsValid;
             VerifyErrorsMessages(validationResult);
+            VerifyValidity();
         }
 
         private void ProcessValidationResult(params ValidationResult[] validationResults)
@@ -152,6 +117,10 @@ namespace DelimaIt.Core.UseCases.Outputs
         }
         public T GetResult()
         {
+            if (!_hasResult)
+            {
+                throw new ResultNullException("Result has not been set. Call AddResult before GetResult.");
+            }
             return _result;
         }
     }

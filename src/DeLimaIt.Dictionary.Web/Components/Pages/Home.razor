@@ -1,0 +1,251 @@
+@page "/"
+@rendermode InteractiveServer
+@inject DictionaryApiClient Api
+
+<PageTitle>Dictionary Console · DeLima IT</PageTitle>
+
+<div class="app-shell">
+    <aside class="sidebar">
+        <a class="brand" href="/" aria-label="Dictionary Console início">
+            <span class="brand-mark"><span></span><span></span><span></span></span>
+            <span class="brand-copy"><strong>dictionary</strong><small>CONSOLE <i>·</i> DELIMA IT</small></span>
+        </a>
+
+        <div class="side-label">WORKSPACE</div>
+        <button class="nav-item active" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h4A1.5 1.5 0 0 1 11 5.5v4A1.5 1.5 0 0 1 9.5 11h-4A1.5 1.5 0 0 1 4 9.5zm9 0A1.5 1.5 0 0 1 14.5 4h4A1.5 1.5 0 0 1 20 5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4A1.5 1.5 0 0 1 13 9.5zm-9 9A1.5 1.5 0 0 1 5.5 13h4a1.5 1.5 0 0 1 1.5 1.5v4A1.5 1.5 0 0 1 9.5 20h-4A1.5 1.5 0 0 1 4 18.5zm9 0a1.5 1.5 0 0 1 1.5-1.5h4a1.5 1.5 0 0 1 1.5 1.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a1.5 1.5 0 0 1-1.5-1.5z" transform="translate(0 -1)" /></svg>
+            <span>Explorar dicionários</span><span class="nav-dot"></span>
+        </button>
+        <div class="side-label side-label-spaced">RECENTES</div>
+        @if (SelectedDictionary is not null)
+        {
+            <button class="recent-item" type="button" @onclick="RefreshValuesAsync">
+                <span class="recent-icon">{ }</span><span class="recent-text"><strong>@SelectedDictionary.Name</strong><small>@Values.Count entradas</small></span>
+            </button>
+        }
+        else
+        {
+            <div class="recent-empty">Seus dicionários recentes<br />aparecerão aqui.</div>
+        }
+
+        <div class="sidebar-bottom">
+            <div class="api-status"><span class="status-pulse @(ApiIsOnline ? "online" : "offline")"></span><span><strong>@(ApiIsOnline ? "API conectada" : "Aguardando API")</strong><small>Dictionary Service</small></span></div>
+            <div class="profile"><div class="avatar">DL</div><span><strong>DeLima IT</strong><small>Workspace admin</small></span><span class="profile-more">···</span></div>
+        </div>
+    </aside>
+
+    <main class="main-area">
+        <header class="topbar">
+            <div class="breadcrumbs"><span>Workspace</span><b>/</b><strong>Explorar dicionários</strong></div>
+            <div class="top-actions"><span class="env-pill"><i></i> AMBIENTE LOCAL</span><button class="icon-button" title="Atualizar dados" @onclick="ReloadAsync" aria-label="Atualizar dados"><svg viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M5.6 9A7 7 0 0 1 18 6l2 6M4 12l2 6a7 7 0 0 0 12.4-3" /></svg></button></div>
+        </header>
+
+        <div class="content-wrap">
+            <section class="page-heading">
+                <div><div class="eyebrow"><span></span> GERENCIAMENTO DE CONFIGURAÇÃO</div><h1>Seus dicionários,<br /><em>em um só lugar.</em></h1><p>Explore e gerencie os valores de configuração dos seus módulos.</p></div>
+                <div class="heading-art" aria-hidden="true"><div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div><div class="art-core"><span>{</span><i>·</i><span>}</span></div><span class="art-spark spark-one">✳</span><span class="art-spark spark-two">✦</span></div>
+            </section>
+
+            <section class="stats-grid" aria-label="Resumo">
+                <div class="stat-card"><div class="stat-icon purple">▦</div><div class="stat-label">MÓDULOS</div><div class="stat-value">@Modules.Count.ToString("00")</div><div class="stat-foot">no seu workspace</div></div>
+                <div class="stat-card"><div class="stat-icon mint">◫</div><div class="stat-label">DICIONÁRIOS</div><div class="stat-value">@Dictionaries.Count.ToString("00")</div><div class="stat-foot">@((SelectedModule is null) ? "selecione um módulo" : $"em {SelectedModule.ModuleName}")</div></div>
+                <div class="stat-card"><div class="stat-icon amber">⌘</div><div class="stat-label">ENTRADAS</div><div class="stat-value">@Values.Count.ToString("00")</div><div class="stat-foot">@((SelectedDictionary is null) ? "selecione um dicionário" : $"em {SelectedDictionary.Name}")</div></div>
+                <div class="stat-card stat-highlight"><div class="stat-highlight-top"><span class="highlight-symbol">✦</span><span>QUICK TIP</span></div><p>Mantenha suas chaves <strong>organizadas</strong> e fáceis de encontrar.</p><div class="tip-lines"><span></span><span></span><span></span></div></div>
+            </section>
+
+            @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            {
+                <div class="alert error-alert" role="alert"><span>!</span><div><strong>Não foi possível carregar os dados</strong><small>@ErrorMessage</small></div><button type="button" @onclick="ReloadAsync" aria-label="Tentar novamente">Tentar novamente ↗</button></div>
+            }
+            @if (!string.IsNullOrWhiteSpace(SuccessMessage))
+            {
+                <div class="toast-success" role="status"><span>✓</span>@SuccessMessage<button @onclick="() => SuccessMessage = null" aria-label="Fechar">×</button></div>
+            }
+
+            <section class="browser-card">
+                <div class="browser-head"><div><div class="section-kicker">CATÁLOGO</div><h2>Biblioteca de configurações <span class="count-badge">@Values.Count</span></h2><p>Selecione um módulo e um dicionário para visualizar suas entradas.</p></div><button class="button-primary" @onclick="OpenCreate" disabled="SelectedDictionary is null"><span>＋</span> Nova entrada</button></div>
+                <div class="selector-row">
+                    <label class="select-field"><span>MÓDULO</span><select value="@SelectedModuleId" @onchange="OnModuleChangedAsync"><option value="">Selecione um módulo</option>@foreach (var module in Modules){<option value="@module.ModuleId">@module.ModuleName · #@module.ModuleId</option>}</select><span class="select-arrow">⌄</span></label>
+                    <span class="selector-divider">→</span>
+                    <label class="select-field dictionary-select"><span>DICIONÁRIO</span><select value="@SelectedDictionaryId" @onchange="OnDictionaryChangedAsync" disabled="SelectedModuleId is null"><option value="">@(SelectedModuleId is null ? "Escolha um módulo primeiro" : "Selecione um dicionário")</option>@foreach (var dictionary in Dictionaries){<option value="@dictionary.Id">@dictionary.Name</option>}</select><span class="select-arrow">⌄</span></label>
+                    @if (SelectedDictionary is not null){<div class="selected-meta"><span class="meta-dot"></span> ID @SelectedDictionary.Id</div>}
+                </div>
+
+                <div class="table-toolbar"><div class="table-title"><span class="table-accent"></span><strong>Chaves e valores</strong><span class="table-subtitle">@Values.Count entradas</span></div><div class="table-tools"><label class="search-box"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg><input placeholder="Buscar chave ou valor..." @bind="SearchText" @bind:event="oninput" /><kbd>⌘ K</kbd></label><button class="icon-button small" title="Atualizar entradas" @onclick="RefreshValuesAsync" disabled="SelectedDictionary is null"><svg viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M5.6 9A7 7 0 0 1 18 6l2 6M4 12l2 6a7 7 0 0 0 12.4-3" /></svg></button></div></div>
+
+                @if (IsLoading)
+                {
+                    <div class="loading-state"><span class="loader"></span><strong>Carregando catálogo</strong><small>Conectando ao Dictionary Service…</small></div>
+                }
+                else if (SelectedDictionary is null)
+                {
+                    <div class="empty-state"><div class="empty-illustration"><span class="empty-folder">▱</span><i>✦</i></div><strong>Comece escolhendo um dicionário</strong><p>Selecione um módulo e depois um dicionário para<br />encontrar suas chaves de configuração.</p></div>
+                }
+                else if (FilteredValues.Count == 0)
+                {
+                    <div class="empty-state compact-empty"><div class="empty-illustration"><span class="empty-folder">⌕</span></div><strong>@(Values.Count == 0 ? "Este dicionário ainda está vazio" : "Nenhuma entrada encontrada")</strong><p>@(Values.Count == 0 ? "Adicione a primeira chave para começar a organizar suas configurações." : "Tente buscar por outro termo ou limpe a busca.")</p>@if (Values.Count == 0){<button class="button-secondary" @onclick="OpenCreate">＋ Criar primeira entrada</button>}</div>
+                }
+                else
+                {
+                    <div class="table-scroll"><table><thead><tr><th class="key-column">CHAVE</th><th>VALOR</th><th class="updated-column">TIPO</th><th class="actions-column">AÇÕES</th></tr></thead><tbody>
+                    @foreach (var item in PagedValues)
+                    {
+                        <tr @key="item.Key"><td><div class="key-cell"><span class="key-mark">⌘</span><code>@item.Key</code></div></td><td><div class="value-cell"><code>@item.Value</code></div></td><td><span class="type-tag">@(LooksLikeJson(item.Value) ? "JSON" : "STRING")</span></td><td><div class="row-actions"><button type="button" title="Editar entrada" aria-label="Editar @item.Key" @onclick="() => OpenEdit(item)"><svg viewBox="0 0 24 24"><path d="m14 5 5 5M4 20l4.2-.8L20 7.4 16.6 4 4.8 15.8 4 20Z" /></svg></button><button type="button" class="delete-action" title="Excluir entrada" aria-label="Excluir @item.Key" @onclick="() => AskDelete(item)"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 13h10l1-13M9 7V4h6v3" /></svg></button></div></td></tr>
+                    }
+                    </tbody></table></div>
+                    <div class="table-footer"><span>Exibindo <strong>@Math.Min(PagedValues.Count, Values.Count)</strong> de <strong>@Values.Count</strong> entradas</span><div class="pagination"><button disabled="@(CurrentPage <= 1)" @onclick="PreviousPage" aria-label="Página anterior">‹</button><span><strong>@CurrentPage</strong> / @TotalPages</span><button disabled="@(CurrentPage >= TotalPages)" @onclick="NextPage" aria-label="Próxima página">›</button></div></div>
+                }
+            </section>
+            <footer class="page-footer"><span>© 2026 <strong>DeLima IT</strong> · Dictionary Console</span><span>Feito para manter tudo <i>no lugar.</i> <b>✦</b></span></footer>
+        </div>
+    </main>
+</div>
+
+@if (IsEditorOpen)
+{
+    <div class="modal-backdrop" @onclick="CloseEditor" @onclick:stopPropagation="false">
+        <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="editor-title" @onclick:stopPropagation="true">
+            <div class="modal-top"><div class="modal-icon">{ }</div><button class="modal-close" @onclick="CloseEditor" aria-label="Fechar">×</button></div>
+            <div class="section-kicker">@(IsEditing ? "EDITAR ENTRADA" : "NOVA ENTRADA")</div><h2 id="editor-title">@(IsEditing ? "Atualize sua chave" : "Adicione uma chave")</h2><p class="modal-description">@(IsEditing ? "Altere o valor associado a esta configuração." : $"Crie uma entrada em {SelectedDictionary?.Name}.")</p>
+            <label class="form-label">CHAVE <input @bind="EditorKey" @bind:event="oninput" placeholder="ex.: api.timeout" disabled="IsEditing" /></label>
+            <label class="form-label">VALOR <textarea @bind="EditorValue" @bind:event="oninput" placeholder="Digite o valor da configuração..." rows="4"></textarea></label>
+            @if (!string.IsNullOrWhiteSpace(EditorError)){<div class="form-error">@EditorError</div>}
+            <div class="modal-actions"><button class="button-secondary" @onclick="CloseEditor">Cancelar</button><button class="button-primary" @onclick="SaveAsync" disabled="IsSaving"><span>@(IsSaving ? "◌" : "＋")</span> @(IsSaving ? "Salvando..." : IsEditing ? "Salvar alterações" : "Criar entrada")</button></div>
+        </section>
+    </div>
+}
+
+@if (PendingDelete is not null)
+{
+    <div class="modal-backdrop" @onclick="CancelDelete"><section class="modal-card confirm-modal" role="alertdialog" aria-modal="true" @onclick:stopPropagation="true"><div class="confirm-icon">!</div><h2>Excluir esta entrada?</h2><p>Você vai remover a chave <code>@PendingDelete.Key</code> permanentemente.</p>@if (!string.IsNullOrWhiteSpace(EditorError)){<div class="form-error">@EditorError</div>}<div class="modal-actions"><button class="button-secondary" @onclick="CancelDelete">Manter entrada</button><button class="button-danger" @onclick="DeleteAsync" disabled="IsSaving">@(IsSaving ? "Excluindo..." : "Sim, excluir")</button></div></section></div>
+}
+
+@code {
+    private const int PageSize = 8;
+    private IReadOnlyList<ModuleItem> Modules { get; set; } = [];
+    private IReadOnlyList<DictionaryItem> Dictionaries { get; set; } = [];
+    private IReadOnlyList<DictionaryValue> Values { get; set; } = [];
+    private int? SelectedModuleId { get; set; }
+    private int? SelectedDictionaryId { get; set; }
+    private string SearchText { get; set; } = "";
+    private bool IsLoading { get; set; }
+    private bool IsSaving { get; set; }
+    private bool ApiIsOnline { get; set; }
+    private bool IsEditorOpen { get; set; }
+    private bool IsEditing { get; set; }
+    private int CurrentPage { get; set; } = 1;
+    private string EditorKey { get; set; } = "";
+    private string EditorValue { get; set; } = "";
+    private string? EditorError { get; set; }
+    private string? ErrorMessage { get; set; }
+    private string? SuccessMessage { get; set; }
+    private DictionaryValue? PendingDelete { get; set; }
+
+    private ModuleItem? SelectedModule => Modules.FirstOrDefault(item => item.ModuleId == SelectedModuleId);
+    private DictionaryItem? SelectedDictionary => Dictionaries.FirstOrDefault(item => item.Id == SelectedDictionaryId);
+    private IReadOnlyList<DictionaryValue> FilteredValues => string.IsNullOrWhiteSpace(SearchText) ? Values : Values.Where(item => item.Key.Contains(SearchText, StringComparison.OrdinalIgnoreCase) || item.Value.Contains(SearchText, StringComparison.OrdinalIgnoreCase)).ToList();
+    private IReadOnlyList<DictionaryValue> PagedValues => FilteredValues.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
+    private int TotalPages => Math.Max(1, (int)Math.Ceiling(FilteredValues.Count / (double)PageSize));
+
+    protected override async Task OnInitializedAsync() => await ReloadAsync();
+
+    private async Task ReloadAsync()
+    {
+        IsLoading = true; ErrorMessage = null;
+        try
+        {
+            Modules = await Api.GetModulesAsync();
+            ApiIsOnline = true;
+            if (SelectedModuleId is not null && Modules.All(module => module.ModuleId != SelectedModuleId)) SelectedModuleId = null;
+            if (SelectedModuleId is not null) await LoadDictionariesAsync();
+        }
+        catch (Exception ex) { ApiIsOnline = false; ErrorMessage = FriendlyError(ex); }
+        finally { IsLoading = false; }
+    }
+
+    private async Task OnModuleChangedAsync(ChangeEventArgs args)
+    {
+        SelectedModuleId = int.TryParse(args.Value?.ToString(), out var id) ? id : null;
+        SelectedDictionaryId = null; Dictionaries = []; Values = []; CurrentPage = 1; ErrorMessage = null;
+        if (SelectedModuleId is not null) await LoadDictionariesAsync();
+    }
+
+    private async Task LoadDictionariesAsync()
+    {
+        if (SelectedModuleId is null) return;
+        IsLoading = true;
+        try
+        {
+            Dictionaries = await Api.GetDictionariesAsync(SelectedModuleId.Value);
+            ApiIsOnline = true;
+            if (SelectedDictionaryId is not null && Dictionaries.All(dictionary => dictionary.Id != SelectedDictionaryId)) SelectedDictionaryId = null;
+            if (SelectedDictionaryId is not null) await LoadValuesAsync();
+        }
+        catch (Exception ex) { ApiIsOnline = false; ErrorMessage = FriendlyError(ex); }
+        finally { IsLoading = false; }
+    }
+
+    private async Task OnDictionaryChangedAsync(ChangeEventArgs args)
+    {
+        SelectedDictionaryId = int.TryParse(args.Value?.ToString(), out var id) ? id : null;
+        Values = []; CurrentPage = 1; SearchText = ""; ErrorMessage = null;
+        if (SelectedDictionaryId is not null) await LoadValuesAsync();
+    }
+
+    private async Task RefreshValuesAsync() { if (SelectedDictionaryId is not null) await LoadValuesAsync(); }
+
+    private async Task LoadValuesAsync()
+    {
+        if (SelectedDictionaryId is null) return;
+        IsLoading = true;
+        try { Values = await Api.GetValuesAsync(SelectedDictionaryId.Value); ApiIsOnline = true; CurrentPage = 1; }
+        catch (Exception ex) { ApiIsOnline = false; ErrorMessage = FriendlyError(ex); }
+        finally { IsLoading = false; }
+    }
+
+    private void OpenCreate() { IsEditing = false; EditorKey = ""; EditorValue = ""; EditorError = null; IsEditorOpen = true; }
+    private void OpenEdit(DictionaryValue item) { IsEditing = true; EditorKey = item.Key; EditorValue = item.Value; EditorError = null; IsEditorOpen = true; }
+    private void CloseEditor() { if (!IsSaving) { IsEditorOpen = false; EditorError = null; } }
+
+    private async Task SaveAsync()
+    {
+        if (SelectedDictionaryId is null) return;
+        if (string.IsNullOrWhiteSpace(EditorKey)) { EditorError = "Informe uma chave para continuar."; return; }
+        if (string.IsNullOrWhiteSpace(EditorValue)) { EditorError = "Informe um valor para continuar."; return; }
+        IsSaving = true; EditorError = null;
+        try
+        {
+            using var response = IsEditing
+                ? await Api.UpdateValueAsync(SelectedDictionaryId.Value, new(EditorKey.Trim(), EditorValue))
+                : await Api.InsertValueAsync(SelectedDictionaryId.Value, new(EditorKey.Trim(), EditorValue));
+            await DictionaryApiClient.EnsureSuccessAsync(response);
+            IsEditorOpen = false; SuccessMessage = IsEditing ? "Entrada atualizada com sucesso." : "Entrada criada com sucesso.";
+            await LoadValuesAsync();
+        }
+        catch (Exception ex) { EditorError = FriendlyError(ex); }
+        finally { IsSaving = false; }
+    }
+
+    private void AskDelete(DictionaryValue item) { PendingDelete = item; EditorError = null; }
+    private void CancelDelete() { if (!IsSaving) { PendingDelete = null; EditorError = null; } }
+
+    private async Task DeleteAsync()
+    {
+        if (SelectedDictionaryId is null || PendingDelete is null) return;
+        IsSaving = true; EditorError = null;
+        try
+        {
+            using var response = await Api.DeleteValueAsync(SelectedDictionaryId.Value, PendingDelete.Key);
+            await DictionaryApiClient.EnsureSuccessAsync(response);
+            PendingDelete = null; SuccessMessage = "Entrada excluída com sucesso.";
+            await LoadValuesAsync();
+        }
+        catch (Exception ex) { EditorError = FriendlyError(ex); }
+        finally { IsSaving = false; }
+    }
+
+    private void PreviousPage() { if (CurrentPage > 1) CurrentPage--; }
+    private void NextPage() { if (CurrentPage < TotalPages) CurrentPage++; }
+    private static bool LooksLikeJson(string value) => value.TrimStart().StartsWith('{') || value.TrimStart().StartsWith('[');
+    private static string FriendlyError(Exception exception) => exception is HttpRequestException ? "Não foi possível conectar à API. Confira se o serviço está ativo e tente novamente." : exception.Message;
+}

@@ -15,7 +15,7 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Enti
 
         public DictionaryValueEntity(int DictionaryId, string key, string value)
         {
-            DictionaryId = DictionaryId;
+            this.DictionaryId = DictionaryId;
             Key = key;
             Value = value;
         }

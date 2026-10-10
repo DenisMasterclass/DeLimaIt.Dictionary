@@ -23,7 +23,7 @@ namespace DeLimaIt.Dictionary.Application.Shared.Repository
                     name: "Sql Server Dictionary Database",
                     failureStatus: HealthStatus.Unhealthy,
                     tags: new[] { "db", "sql", "sql server" },
-                    timeout: TimeSpan.TryParse(sqlTimeoutKey, out var sqlServerTimeout) ? TimeSpan.FromSeconds(15) : sqlServerTimeout);
+                    timeout: TimeSpan.TryParse(sqlTimeoutKey, out var sqlServerTimeout) ? sqlServerTimeout : TimeSpan.FromSeconds(15));
             return services;
         }
     }

@@ -9,7 +9,7 @@
         public ConfigurationEntity(int moduleId,string DictionaryId,IList<DictionaryEntity> Dictionaries)
         {
             ModuleId = moduleId;
-            DictionaryId = DictionaryId;
+            this.DictionaryId = DictionaryId;
         }
 
         public int ModuleId { get; set; }

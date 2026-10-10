@@ -13,7 +13,7 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Models
         public ConfigurationDictionaryInput(OperationType operation, int DictionaryId, string key, string value)
         {
             Operation = operation;
-            DictionaryId = DictionaryId;
+            this.DictionaryId = DictionaryId;
             Key = key;
             Value = value;
         }
