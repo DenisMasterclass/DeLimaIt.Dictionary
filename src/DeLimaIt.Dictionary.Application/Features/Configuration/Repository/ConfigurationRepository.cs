@@ -79,8 +79,20 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository
         public async Task<int> DeleteModule(ConfigurationModuleEntity configurationModuleEntity, CancellationToken cancellationToken = default)
         {
             var connection = _context.Connection;
-            var rowsAffected = await connection.ExecuteAsync(DeleteSqlModules, configurationModuleEntity, _context.Transaction).ConfigureAwait(false);
+            var rowsAffected = await connection.ExecuteAsync(DeleteModuleAndChildrenSql, configurationModuleEntity, _context.Transaction).ConfigureAwait(false);
             return rowsAffected;
         }
+
+        public async Task<int> CreateModuleAsync(ConfigurationModuleEntity configurationModuleEntity, CancellationToken cancellationToken = default)
+            => await _context.Connection.QuerySingleAsync<int>(CreateModuleSql, configurationModuleEntity, _context.Transaction).ConfigureAwait(false);
+
+        public async Task<int> CreateDictionaryAsync(ConfigurationParameterEntity configurationParameterEntity, CancellationToken cancellationToken = default)
+            => await _context.Connection.QuerySingleAsync<int>(CreateDictionarySql, configurationParameterEntity, _context.Transaction).ConfigureAwait(false);
+
+        public async Task<int> UpdateDictionaryAsync(int dictionaryId, string name, CancellationToken cancellationToken = default)
+            => await _context.Connection.ExecuteAsync(UpdateDictionarySql, new { Id = dictionaryId, Name = name }, _context.Transaction).ConfigureAwait(false);
+
+        public async Task<int> DeleteDictionaryAsync(int dictionaryId, CancellationToken cancellationToken = default)
+            => await _context.Connection.ExecuteAsync(DeleteDictionarySql, new { Id = dictionaryId }, _context.Transaction).ConfigureAwait(false);
     }
 }

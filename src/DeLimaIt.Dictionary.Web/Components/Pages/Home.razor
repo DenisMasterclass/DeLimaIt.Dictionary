@@ -12,10 +12,14 @@
         </a>
 
         <div class="side-label">WORKSPACE</div>
-        <button class="nav-item active" type="button">
+        <NavLink href="/admin" class="nav-item" activeClass="active">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4zM8 9h8M8 12h5M8 15h7M17 4v3" /></svg>
+            <span>Cadastrar dicionários</span><span class="nav-dot"></span>
+        </NavLink>
+        <NavLink href="/" Match="NavLinkMatch.All" class="nav-item" activeClass="active">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h4A1.5 1.5 0 0 1 11 5.5v4A1.5 1.5 0 0 1 9.5 11h-4A1.5 1.5 0 0 1 4 9.5zm9 0A1.5 1.5 0 0 1 14.5 4h4A1.5 1.5 0 0 1 20 5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4A1.5 1.5 0 0 1 13 9.5zm-9 9A1.5 1.5 0 0 1 5.5 13h4a1.5 1.5 0 0 1 1.5 1.5v4A1.5 1.5 0 0 1 9.5 20h-4A1.5 1.5 0 0 1 4 18.5zm9 0a1.5 1.5 0 0 1 1.5-1.5h4a1.5 1.5 0 0 1 1.5 1.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a1.5 1.5 0 0 1-1.5-1.5z" transform="translate(0 -1)" /></svg>
             <span>Explorar dicionários</span><span class="nav-dot"></span>
-        </button>
+        </NavLink>
         <div class="side-label side-label-spaced">RECENTES</div>
         @if (SelectedDictionary is not null)
         {
@@ -63,15 +67,17 @@
             }
 
             <section class="browser-card">
-                <div class="browser-head"><div><div class="section-kicker">CATÁLOGO</div><h2>Biblioteca de configurações <span class="count-badge">@Values.Count</span></h2><p>Selecione um módulo e um dicionário para visualizar suas entradas.</p></div><button class="button-primary" @onclick="OpenCreate" disabled="SelectedDictionary is null"><span>＋</span> Nova entrada</button></div>
+                <div class="browser-head"><div><div class="section-kicker">CATÁLOGO</div><h2>Biblioteca de configurações <span class="count-badge">@Values.Count</span></h2><p>Selecione um módulo e um dicionário para visualizar suas entradas.</p></div><button class="button-primary" @onclick="OpenCreate" disabled="@(SelectedDictionary is null)"><span>＋</span> Nova entrada</button></div>
                 <div class="selector-row">
                     <label class="select-field"><span>MÓDULO</span><select value="@SelectedModuleId" @onchange="OnModuleChangedAsync"><option value="">Selecione um módulo</option>@foreach (var module in Modules){<option value="@module.ModuleId">@module.ModuleName · #@module.ModuleId</option>}</select><span class="select-arrow">⌄</span></label>
+                    <div class="catalog-actions"><button type="button" title="Criar módulo" aria-label="Criar módulo" @onclick="OpenCreateModule">＋</button>@if (SelectedModule is not null){<button type="button" title="Editar módulo" aria-label="Editar módulo" @onclick="OpenEditModule">✎</button><button type="button" class="delete-action" title="Excluir módulo e dependências" aria-label="Excluir módulo" @onclick="AskDeleteModule">×</button>}</div>
                     <span class="selector-divider">→</span>
-                    <label class="select-field dictionary-select"><span>DICIONÁRIO</span><select value="@SelectedDictionaryId" @onchange="OnDictionaryChangedAsync" disabled="SelectedModuleId is null"><option value="">@(SelectedModuleId is null ? "Escolha um módulo primeiro" : "Selecione um dicionário")</option>@foreach (var dictionary in Dictionaries){<option value="@dictionary.Id">@dictionary.Name</option>}</select><span class="select-arrow">⌄</span></label>
+                    <label class="select-field dictionary-select"><span>DICIONÁRIO</span><select value="@SelectedDictionaryId" @onchange="OnDictionaryChangedAsync" disabled="@(SelectedModuleId is null)"><option value="">@(SelectedModuleId is null ? "Escolha um módulo primeiro" : "Selecione um dicionário")</option>@foreach (var dictionary in Dictionaries){<option value="@dictionary.Id">@dictionary.Name</option>}</select><span class="select-arrow">⌄</span></label>
+                    <div class="catalog-actions"><button type="button" title="Criar dicionário" aria-label="Criar dicionário" disabled="@(SelectedModuleId is null)" @onclick="OpenCreateDictionary">＋</button>@if (SelectedDictionary is not null){<button type="button" title="Editar dicionário" aria-label="Editar dicionário" @onclick="OpenEditDictionary">✎</button><button type="button" class="delete-action" title="Excluir dicionário e entradas" aria-label="Excluir dicionário" @onclick="AskDeleteDictionary">×</button>}</div>
                     @if (SelectedDictionary is not null){<div class="selected-meta"><span class="meta-dot"></span> ID @SelectedDictionary.Id</div>}
                 </div>
 
-                <div class="table-toolbar"><div class="table-title"><span class="table-accent"></span><strong>Chaves e valores</strong><span class="table-subtitle">@Values.Count entradas</span></div><div class="table-tools"><label class="search-box"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg><input placeholder="Buscar chave ou valor..." @bind="SearchText" @bind:event="oninput" /><kbd>⌘ K</kbd></label><button class="icon-button small" title="Atualizar entradas" @onclick="RefreshValuesAsync" disabled="SelectedDictionary is null"><svg viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M5.6 9A7 7 0 0 1 18 6l2 6M4 12l2 6a7 7 0 0 0 12.4-3" /></svg></button></div></div>
+                <div class="table-toolbar"><div class="table-title"><span class="table-accent"></span><strong>Chaves e valores</strong><span class="table-subtitle">@Values.Count entradas</span></div><div class="table-tools"><label class="search-box"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg><input placeholder="Buscar chave ou valor..." @bind="SearchText" @bind:event="oninput" /><kbd>⌘ K</kbd></label><button class="icon-button small" title="Atualizar entradas" @onclick="RefreshValuesAsync" disabled="@(SelectedDictionary is null)"><svg viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M5.6 9A7 7 0 0 1 18 6l2 6M4 12l2 6a7 7 0 0 0 12.4-3" /></svg></button></div></div>
 
                 @if (IsLoading)
                 {
@@ -106,18 +112,25 @@
     <div class="modal-backdrop" @onclick="CloseEditor" @onclick:stopPropagation="false">
         <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="editor-title" @onclick:stopPropagation="true">
             <div class="modal-top"><div class="modal-icon">{ }</div><button class="modal-close" @onclick="CloseEditor" aria-label="Fechar">×</button></div>
-            <div class="section-kicker">@(IsEditing ? "EDITAR ENTRADA" : "NOVA ENTRADA")</div><h2 id="editor-title">@(IsEditing ? "Atualize sua chave" : "Adicione uma chave")</h2><p class="modal-description">@(IsEditing ? "Altere o valor associado a esta configuração." : $"Crie uma entrada em {SelectedDictionary?.Name}.")</p>
-            <label class="form-label">CHAVE <input @bind="EditorKey" @bind:event="oninput" placeholder="ex.: api.timeout" disabled="IsEditing" /></label>
-            <label class="form-label">VALOR <textarea @bind="EditorValue" @bind:event="oninput" placeholder="Digite o valor da configuração..." rows="4"></textarea></label>
+            <div class="section-kicker">@(IsEditing ? $"EDITAR {EditorKindLabel}" : $"NOVO {EditorKindLabel}")</div><h2 id="editor-title">@EditorTitle</h2><p class="modal-description">@EditorDescription</p>
+            @if (EditorKind == "Value")
+            {
+                <label class="form-label">CHAVE <input @bind="EditorKey" @bind:event="oninput" placeholder="ex.: api.timeout" /></label>
+                <label class="form-label">VALOR <textarea @bind="EditorValue" @bind:event="oninput" placeholder="Digite o valor da configuração..." rows="4"></textarea></label>
+            }
+            else
+            {
+                <label class="form-label">NOME <input @bind="EditorName" @bind:event="oninput" placeholder="Digite um nome..." maxlength="100" /></label>
+            }
             @if (!string.IsNullOrWhiteSpace(EditorError)){<div class="form-error">@EditorError</div>}
-            <div class="modal-actions"><button class="button-secondary" @onclick="CloseEditor">Cancelar</button><button class="button-primary" @onclick="SaveAsync" disabled="IsSaving"><span>@(IsSaving ? "◌" : "＋")</span> @(IsSaving ? "Salvando..." : IsEditing ? "Salvar alterações" : "Criar entrada")</button></div>
+            <div class="modal-actions"><button class="button-secondary" @onclick="CloseEditor">Cancelar</button><button class="button-primary" @onclick="SaveAsync" disabled="@IsSaving"><span>@(IsSaving ? "◌" : "＋")</span> @(IsSaving ? "Salvando..." : IsEditing ? "Salvar alterações" : "Criar entrada")</button></div>
         </section>
     </div>
 }
 
-@if (PendingDelete is not null)
+@if (IsDeleteOpen)
 {
-    <div class="modal-backdrop" @onclick="CancelDelete"><section class="modal-card confirm-modal" role="alertdialog" aria-modal="true" @onclick:stopPropagation="true"><div class="confirm-icon">!</div><h2>Excluir esta entrada?</h2><p>Você vai remover a chave <code>@PendingDelete.Key</code> permanentemente.</p>@if (!string.IsNullOrWhiteSpace(EditorError)){<div class="form-error">@EditorError</div>}<div class="modal-actions"><button class="button-secondary" @onclick="CancelDelete">Manter entrada</button><button class="button-danger" @onclick="DeleteAsync" disabled="IsSaving">@(IsSaving ? "Excluindo..." : "Sim, excluir")</button></div></section></div>
+    <div class="modal-backdrop" @onclick="CancelDelete"><section class="modal-card confirm-modal" role="alertdialog" aria-modal="true" @onclick:stopPropagation="true"><div class="confirm-icon">!</div><h2>@DeleteTitle</h2><p>@DeleteDescription</p>@if (!string.IsNullOrWhiteSpace(EditorError)){<div class="form-error">@EditorError</div>}<div class="modal-actions"><button class="button-secondary" @onclick="CancelDelete">Cancelar</button><button class="button-danger" @onclick="DeleteAsync" disabled="@IsSaving">@(IsSaving ? "Excluindo..." : "Sim, excluir")</button></div></section></div>
 }
 
 @code {
@@ -132,14 +145,26 @@
     private bool IsSaving { get; set; }
     private bool ApiIsOnline { get; set; }
     private bool IsEditorOpen { get; set; }
+    private bool IsDeleteOpen { get; set; }
     private bool IsEditing { get; set; }
     private int CurrentPage { get; set; } = 1;
     private string EditorKey { get; set; } = "";
+    private string EditorOldKey { get; set; } = "";
     private string EditorValue { get; set; } = "";
+    private string EditorName { get; set; } = "";
+    private string EditorKind { get; set; } = "Value";
+    private string PendingDeleteKind { get; set; } = "Value";
+    private int PendingDeleteId { get; set; }
+    private string PendingDeleteName { get; set; } = "";
     private string? EditorError { get; set; }
     private string? ErrorMessage { get; set; }
     private string? SuccessMessage { get; set; }
     private DictionaryValue? PendingDelete { get; set; }
+    private string EditorKindLabel => EditorKind == "Value" ? "ENTRADA" : EditorKind == "Module" ? "MÓDULO" : "DICIONÁRIO";
+    private string EditorTitle => EditorKind == "Value" ? (IsEditing ? "Atualize sua chave" : "Adicione uma chave") : (IsEditing ? "Atualize o nome" : EditorKind == "Module" ? "Crie um módulo" : "Crie um dicionário");
+    private string EditorDescription => EditorKind == "Value" ? (IsEditing ? "Altere a chave ou o valor desta configuração." : $"Crie uma entrada em {SelectedDictionary?.Name}.") : EditorKind == "Module" ? "Os módulos agrupam seus dicionários de configuração." : $"Este dicionário será criado dentro de {SelectedModule?.ModuleName}.";
+    private string DeleteTitle => PendingDeleteKind == "Module" ? "Excluir módulo e dependências?" : PendingDeleteKind == "Dictionary" ? "Excluir dicionário e entradas?" : "Excluir esta entrada?";
+    private string DeleteDescription => PendingDeleteKind == "Module" ? $"O módulo {PendingDeleteName} e todos os seus dicionários e chaves serão removidos." : PendingDeleteKind == "Dictionary" ? $"O dicionário {PendingDeleteName} e todas as suas chaves serão removidos." : $"Você vai remover a chave {PendingDelete?.Key} permanentemente.";
 
     private ModuleItem? SelectedModule => Modules.FirstOrDefault(item => item.ModuleId == SelectedModuleId);
     private DictionaryItem? SelectedDictionary => Dictionaries.FirstOrDefault(item => item.Id == SelectedDictionaryId);
@@ -203,42 +228,68 @@
         finally { IsLoading = false; }
     }
 
-    private void OpenCreate() { IsEditing = false; EditorKey = ""; EditorValue = ""; EditorError = null; IsEditorOpen = true; }
-    private void OpenEdit(DictionaryValue item) { IsEditing = true; EditorKey = item.Key; EditorValue = item.Value; EditorError = null; IsEditorOpen = true; }
+    private void OpenCreate() { EditorKind = "Value"; IsEditing = false; EditorKey = ""; EditorOldKey = ""; EditorValue = ""; EditorError = null; IsEditorOpen = true; }
+    private void OpenEdit(DictionaryValue item) { EditorKind = "Value"; IsEditing = true; EditorKey = item.Key; EditorOldKey = item.Key; EditorValue = item.Value; EditorError = null; IsEditorOpen = true; }
+    private void OpenCreateModule() { EditorKind = "Module"; IsEditing = false; EditorName = ""; EditorError = null; IsEditorOpen = true; }
+    private void OpenEditModule() { if (SelectedModule is null) return; EditorKind = "Module"; IsEditing = true; EditorName = SelectedModule.ModuleName ?? ""; EditorError = null; IsEditorOpen = true; }
+    private void OpenCreateDictionary() { if (SelectedModuleId is null) return; EditorKind = "Dictionary"; IsEditing = false; EditorName = ""; EditorError = null; IsEditorOpen = true; }
+    private void OpenEditDictionary() { if (SelectedDictionary is null) return; EditorKind = "Dictionary"; IsEditing = true; EditorName = SelectedDictionary.Name; EditorError = null; IsEditorOpen = true; }
     private void CloseEditor() { if (!IsSaving) { IsEditorOpen = false; EditorError = null; } }
 
     private async Task SaveAsync()
     {
-        if (SelectedDictionaryId is null) return;
-        if (string.IsNullOrWhiteSpace(EditorKey)) { EditorError = "Informe uma chave para continuar."; return; }
-        if (string.IsNullOrWhiteSpace(EditorValue)) { EditorError = "Informe um valor para continuar."; return; }
+        if (string.IsNullOrWhiteSpace(EditorKind == "Value" ? EditorKey : EditorName)) { EditorError = "Informe um nome ou chave para continuar."; return; }
+        if (EditorKind == "Value" && (SelectedDictionaryId is null || string.IsNullOrWhiteSpace(EditorValue))) { EditorError = "Selecione um dicionário e informe um valor."; return; }
+        if (EditorName.Length > 100) { EditorError = "O nome pode ter no máximo 100 caracteres."; return; }
         IsSaving = true; EditorError = null;
         try
         {
-            using var response = IsEditing
-                ? await Api.UpdateValueAsync(SelectedDictionaryId.Value, new(EditorKey.Trim(), EditorValue))
-                : await Api.InsertValueAsync(SelectedDictionaryId.Value, new(EditorKey.Trim(), EditorValue));
+            using var response = EditorKind switch
+            {
+                "Module" when IsEditing && SelectedModuleId is not null => await Api.UpdateModuleAsync(SelectedModuleId.Value, EditorName.Trim()),
+                "Module" => await Api.CreateModuleAsync(EditorName.Trim()),
+                "Dictionary" when IsEditing && SelectedDictionaryId is not null => await Api.UpdateDictionaryAsync(SelectedDictionaryId.Value, EditorName.Trim()),
+                "Dictionary" when SelectedModuleId is not null => await Api.CreateDictionaryAsync(SelectedModuleId.Value, EditorName.Trim()),
+                "Value" when IsEditing && SelectedDictionaryId is not null => await Api.UpdateValueAsync(SelectedDictionaryId.Value, new(EditorKey.Trim(), EditorValue), EditorOldKey),
+                "Value" when SelectedDictionaryId is not null => await Api.InsertValueAsync(SelectedDictionaryId.Value, new(EditorKey.Trim(), EditorValue)),
+                _ => throw new InvalidOperationException("Selecione primeiro um módulo ou dicionário.")
+            };
             await DictionaryApiClient.EnsureSuccessAsync(response);
-            IsEditorOpen = false; SuccessMessage = IsEditing ? "Entrada atualizada com sucesso." : "Entrada criada com sucesso.";
-            await LoadValuesAsync();
+            IsEditorOpen = false;
+            var itemName = EditorKind == "Module" ? "Módulo" : EditorKind == "Dictionary" ? "Dicionário" : "Entrada";
+            var statusWord = EditorKind == "Value" ? (IsEditing ? "atualizada" : "criada") : (IsEditing ? "atualizado" : "criado");
+            SuccessMessage = $"{itemName} {statusWord} com sucesso.";
+            if (EditorKind == "Module") await ReloadAsync();
+            else if (EditorKind == "Dictionary") await LoadDictionariesAsync();
+            else await LoadValuesAsync();
         }
         catch (Exception ex) { EditorError = FriendlyError(ex); }
         finally { IsSaving = false; }
     }
 
-    private void AskDelete(DictionaryValue item) { PendingDelete = item; EditorError = null; }
-    private void CancelDelete() { if (!IsSaving) { PendingDelete = null; EditorError = null; } }
+    private void AskDelete(DictionaryValue item) { PendingDeleteKind = "Value"; PendingDelete = item; PendingDeleteName = item.Key; EditorError = null; IsDeleteOpen = true; }
+    private void AskDeleteModule() { if (SelectedModule is null) return; PendingDeleteKind = "Module"; PendingDeleteId = SelectedModule.ModuleId; PendingDeleteName = SelectedModule.ModuleName ?? ""; PendingDelete = null; EditorError = null; IsDeleteOpen = true; }
+    private void AskDeleteDictionary() { if (SelectedDictionary is null) return; PendingDeleteKind = "Dictionary"; PendingDeleteId = SelectedDictionary.Id; PendingDeleteName = SelectedDictionary.Name; PendingDelete = null; EditorError = null; IsDeleteOpen = true; }
+    private void CancelDelete() { if (!IsSaving) { PendingDelete = null; PendingDeleteName = ""; EditorError = null; IsDeleteOpen = false; } }
 
     private async Task DeleteAsync()
     {
-        if (SelectedDictionaryId is null || PendingDelete is null) return;
+        if (PendingDeleteKind == "Value" && (SelectedDictionaryId is null || PendingDelete is null)) return;
         IsSaving = true; EditorError = null;
         try
         {
-            using var response = await Api.DeleteValueAsync(SelectedDictionaryId.Value, PendingDelete.Key);
+            using var response = PendingDeleteKind switch
+            {
+                "Module" => await Api.DeleteModuleAsync(PendingDeleteId),
+                "Dictionary" => await Api.DeleteDictionaryAsync(PendingDeleteId),
+                _ => await Api.DeleteValueAsync(SelectedDictionaryId!.Value, PendingDelete!.Key)
+            };
             await DictionaryApiClient.EnsureSuccessAsync(response);
-            PendingDelete = null; SuccessMessage = "Entrada excluída com sucesso.";
-            await LoadValuesAsync();
+            var deletedKind = PendingDeleteKind;
+            PendingDelete = null; PendingDeleteName = ""; IsDeleteOpen = false; SuccessMessage = $"{(deletedKind == "Module" ? "Módulo" : deletedKind == "Dictionary" ? "Dicionário" : "Entrada")} excluído com sucesso.";
+            if (deletedKind == "Module") { SelectedModuleId = null; SelectedDictionaryId = null; Dictionaries = []; Values = []; await ReloadAsync(); }
+            else if (deletedKind == "Dictionary") { SelectedDictionaryId = null; Values = []; await LoadDictionariesAsync(); }
+            else await LoadValuesAsync();
         }
         catch (Exception ex) { EditorError = FriendlyError(ex); }
         finally { IsSaving = false; }

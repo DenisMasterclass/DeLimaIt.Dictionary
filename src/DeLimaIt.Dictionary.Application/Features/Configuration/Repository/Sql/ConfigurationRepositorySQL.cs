@@ -35,8 +35,8 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Sql
                                                     ";
 
         internal const string UpdateSqlDictionaryValue = @"UPDATE CONFIGURACAO_CHAVE 
-                                SET DSC_VALOR = @Value 
-                                WHERE COD_PARAMETRO = @DictionaryId AND DSC_CHAVE = @Key";
+                                SET DSC_CHAVE = @Key, DSC_VALOR = @Value
+                                WHERE COD_PARAMETRO = @DictionaryId AND DSC_CHAVE = @OldKey";
 
         internal const string DeleteSqlDictionaryValue = @"DELETE FROM CONFIGURACAO_CHAVE 
                                                        WHERE COD_PARAMETRO = @DictionaryId 
@@ -59,5 +59,32 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Sql
                                                     @ModuleName
                                                     )";
         internal const string DeleteSqlModules = @"DELETE FROM CONFIGURACAO_MODULO WHERE COD_MODULO = @ModuleId";
+
+        internal const string CreateModuleSql = @"INSERT INTO dbo.CONFIGURACAO_MODULO (NOM_MODULO) OUTPUT INSERTED.COD_MODULO VALUES (@ModuleName)";
+        internal const string CreateDictionarySql = @"INSERT INTO dbo.CONFIGURACAO_PARAMETRO (COD_MODULO, NOM_PARAMETRO) OUTPUT INSERTED.COD_PARAMETRO VALUES (@ModuleId, @Name)";
+        internal const string UpdateDictionarySql = @"UPDATE dbo.CONFIGURACAO_PARAMETRO SET NOM_PARAMETRO = @Name WHERE COD_PARAMETRO = @Id";
+        internal const string DeleteDictionarySql = @"
+BEGIN TRANSACTION;
+BEGIN TRY
+DELETE FROM dbo.CONFIGURACAO_CHAVE WHERE COD_PARAMETRO = @Id;
+DELETE FROM dbo.CONFIGURACAO_PARAMETRO WHERE COD_PARAMETRO = @Id;
+COMMIT TRANSACTION;
+END TRY
+BEGIN CATCH
+IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+THROW;
+END CATCH;";
+        internal const string DeleteModuleAndChildrenSql = @"
+BEGIN TRANSACTION;
+BEGIN TRY
+DELETE FROM dbo.CONFIGURACAO_CHAVE WHERE COD_PARAMETRO IN (SELECT COD_PARAMETRO FROM dbo.CONFIGURACAO_PARAMETRO WHERE COD_MODULO = @ModuleId);
+DELETE FROM dbo.CONFIGURACAO_PARAMETRO WHERE COD_MODULO = @ModuleId;
+DELETE FROM dbo.CONFIGURACAO_MODULO WHERE COD_MODULO = @ModuleId;
+COMMIT TRANSACTION;
+END TRY
+BEGIN CATCH
+IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+THROW;
+END CATCH;";
     }
 }

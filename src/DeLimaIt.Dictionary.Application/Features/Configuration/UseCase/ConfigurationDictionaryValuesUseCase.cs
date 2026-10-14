@@ -22,7 +22,7 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.UseCase
         protected override async Task<Output<ConfigurationDictionaryOutput>> HandleAsync (ConfigurationDictionaryInput request, CancellationToken cancellationToken)
         {
             var output = new Output<ConfigurationDictionaryOutput>();
-            var DictionaryValue = new DictionaryValueEntity(request.DictionaryId, request.Key, request.Value);
+            var DictionaryValue = new DictionaryValueEntity(request.DictionaryId, request.OldKey, request.Key, request.Value);
             int rowsAffected;
             string operationName;
             switch (request.Operation)

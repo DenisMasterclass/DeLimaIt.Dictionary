@@ -4,7 +4,7 @@ using DelimaIt.Core.UseCases;
 using DeLimaIt.Dictionary.Application.Features.Configuration.Models;
 using DeLimaIt.Dictionary.Api.Transport.V1;
 using DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Entities;
-using System.Reflection;
+using Microsoft.Data.SqlClient;
 
 namespace DeLimaIt.Dictionary.Api.Controllers
 {
@@ -75,13 +75,17 @@ namespace DeLimaIt.Dictionary.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateDictionaryValues([FromRoute] int DictionaryId, [FromBody] DictionaryValueRequest Dictionary, CancellationToken cancellationToken)
         {
-            var input = new ConfigurationDictionaryInput(OperationType.Update, DictionaryId, Dictionary.Key ,  Dictionary.Value);
-            var output = await _configurationDictionaryHandler.ExecuteAsync(input, cancellationToken);
-            if (output.IsValid)
+            var input = new ConfigurationDictionaryInput(OperationType.Update, DictionaryId, Dictionary.Key ,  Dictionary.Value, Dictionary.OldKey);
+            try
             {
-                return Ok(output.GetResult());
+                var output = await _configurationDictionaryHandler.ExecuteAsync(input, cancellationToken);
+                if (output.IsValid)
+                {
+                    return Ok(output.GetResult());
+                }
+                return BadRequest(output);
             }
-            return BadRequest(output);
+            catch (SqlException ex) when (ex.Number is 2601 or 2627) { return Conflict("Já existe uma chave com esse nome neste dicionário."); }
         }
         [HttpPost("Dictionaries/Values/{DictionaryId}", Name = "InsertDictionaryValues")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -90,12 +94,16 @@ namespace DeLimaIt.Dictionary.Api.Controllers
         public async Task<IActionResult> InsertDictionaryValues([FromRoute] int DictionaryId, [FromBody] DictionaryValueRequest Dictionary, CancellationToken cancellationToken)
         {
             var input = new ConfigurationDictionaryInput(OperationType.Insert, DictionaryId, Dictionary.Key, Dictionary.Value);
-            var output = await _configurationDictionaryHandler.ExecuteAsync(input, cancellationToken);
-            if (output.IsValid)
+            try
             {
-                return Ok(output.GetResult());
+                var output = await _configurationDictionaryHandler.ExecuteAsync(input, cancellationToken);
+                if (output.IsValid)
+                {
+                    return Ok(output.GetResult());
+                }
+                return BadRequest(output);
             }
-            return BadRequest(output);
+            catch (SqlException ex) when (ex.Number is 2601 or 2627) { return Conflict("Já existe uma chave com esse nome neste dicionário."); }
         }
         [HttpGet("Modules/{moduleId}", Name = "GetModules")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ConfigurationModuleOutput>))]

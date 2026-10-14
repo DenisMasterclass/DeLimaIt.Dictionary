@@ -1,0 +1,275 @@
+@page "/admin"
+@rendermode InteractiveServer
+@inject DictionaryApiClient Api
+
+<PageTitle>Cadastrar dicionários · DeLima IT</PageTitle>
+
+<div class="app-shell">
+    <aside class="sidebar">
+        <a class="brand" href="/" aria-label="Dictionary Console início">
+            <span class="brand-mark"><span></span><span></span><span></span></span>
+            <span class="brand-copy"><strong>dictionary</strong><small>CONSOLE <i>·</i> DELIMA IT</small></span>
+        </a>
+        <div class="side-label">WORKSPACE</div>
+        <NavLink href="/admin" class="nav-item" activeClass="active">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4zM8 9h8M8 12h5M8 15h7M17 4v3" /></svg>
+            <span>Cadastrar dicionários</span><span class="nav-dot"></span>
+        </NavLink>
+        <NavLink href="/" Match="NavLinkMatch.All" class="nav-item" activeClass="active">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h4A1.5 1.5 0 0 1 11 5.5v4A1.5 1.5 0 0 1 9.5 11h-4A1.5 1.5 0 0 1 4 9.5zm9 0A1.5 1.5 0 0 1 14.5 4h4A1.5 1.5 0 0 1 20 5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4A1.5 1.5 0 0 1 13 9.5zm-9 9A1.5 1.5 0 0 1 5.5 13h4a1.5 1.5 0 0 1 1.5 1.5v4A1.5 1.5 0 0 1 9.5 20h-4A1.5 1.5 0 0 1 4 18.5zm9 0a1.5 1.5 0 0 1 1.5-1.5h4a1.5 1.5 0 0 1 1.5 1.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a1.5 1.5 0 0 1-1.5-1.5z" transform="translate(0 -1)" /></svg>
+            <span>Explorar dicionários</span>
+        </NavLink>
+
+        <div class="admin-sidebar-note"><span class="note-icon">✳</span><strong>Base organizada</strong><p>Crie módulos para agrupar dicionários por aplicação ou domínio.</p></div>
+        <div class="sidebar-bottom">
+            <div class="api-status"><span class="status-pulse @(ApiIsOnline ? "online" : "offline")"></span><span><strong>@(ApiIsOnline ? "API conectada" : "Aguardando API")</strong><small>Dictionary Service</small></span></div>
+            <div class="profile"><div class="avatar">DL</div><span><strong>DeLima IT</strong><small>Workspace admin</small></span><span class="profile-more">···</span></div>
+        </div>
+    </aside>
+
+    <main class="main-area">
+        <header class="topbar">
+            <div class="breadcrumbs"><span>Workspace</span><b>/</b><strong>Cadastrar dicionários</strong></div>
+            <div class="top-actions"><span class="env-pill"><i></i> AMBIENTE LOCAL</span><button class="icon-button" title="Atualizar catálogo" @onclick="ReloadAsync" aria-label="Atualizar catálogo"><svg viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M5.6 9A7 7 0 0 1 18 6l2 6M4 12l2 6a7 7 0 0 0 12.4-3" /></svg></button></div>
+        </header>
+
+        <div class="content-wrap admin-content">
+            <section class="admin-heading">
+                <div><div class="eyebrow"><span></span> ADMINISTRAÇÃO DO CATÁLOGO</div><h1>Cadastre e organize<br /><em>seus dicionários.</em></h1><p>Gerencie módulos e mantenha cada conjunto de configurações no lugar certo.</p></div>
+                <button class="button-primary admin-new-module" @onclick="OpenCreateModule"><span>＋</span> Novo módulo</button>
+            </section>
+
+            <section class="stats-grid admin-stats" aria-label="Resumo do catálogo">
+                <div class="stat-card"><div class="stat-icon purple">▦</div><div class="stat-label">MÓDULOS</div><div class="stat-value">@Modules.Count.ToString("00")</div><div class="stat-foot">grupos de configuração</div></div>
+                <div class="stat-card"><div class="stat-icon mint">◫</div><div class="stat-label">DICIONÁRIOS</div><div class="stat-value">@DictionaryCount.ToString("00")</div><div class="stat-foot">no catálogo completo</div></div>
+                <div class="stat-card admin-stat-tip"><div class="stat-highlight-top"><span class="highlight-symbol">✦</span><span>ESTRUTURA</span></div><p>Módulos agrupam dicionários; dicionários agrupam <strong>chaves</strong>.</p><div class="tip-lines"><span></span><span></span><span></span></div></div>
+            </section>
+
+            @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            {
+                <div class="alert error-alert" role="alert"><span>!</span><div><strong>Não foi possível carregar o catálogo</strong><small>@ErrorMessage</small></div><button type="button" @onclick="ReloadAsync">Tentar novamente ↗</button></div>
+            }
+            @if (!string.IsNullOrWhiteSpace(SuccessMessage))
+            {
+                <div class="toast-success" role="status"><span>✓</span>@SuccessMessage<button @onclick="() => SuccessMessage = null" aria-label="Fechar">×</button></div>
+            }
+
+            <section class="admin-browser">
+                <div class="browser-head admin-browser-head"><div><div class="section-kicker">CATÁLOGO</div><h2>Estrutura de configurações</h2><p>Selecione um módulo para cadastrar e administrar os dicionários vinculados.</p></div></div>
+                <div class="admin-columns">
+                    <section class="admin-panel module-panel">
+                        <div class="admin-panel-heading"><div><span class="panel-index">01</span><div><h3>Módulos</h3><p>@Modules.Count módulos cadastrados</p></div></div><button class="button-secondary compact-button" @onclick="OpenCreateModule"><span>＋</span> Adicionar</button></div>
+                        <label class="search-box admin-search"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg><input placeholder="Buscar módulo..." @bind="ModuleSearch" @bind:event="oninput" /></label>
+                        @if (IsLoading)
+                        {
+                            <div class="admin-loading"><span class="loader"></span><small>Carregando módulos…</small></div>
+                        }
+                        else if (FilteredModules.Count == 0)
+                        {
+                            <div class="admin-empty"><span>▦</span><strong>@(Modules.Count == 0 ? "Nenhum módulo cadastrado" : "Nenhum módulo encontrado")</strong><small>@(Modules.Count == 0 ? "Crie seu primeiro módulo para começar." : "Tente outro termo de busca.")</small>@if (Modules.Count == 0){<button class="button-secondary compact-button" @onclick="OpenCreateModule">＋ Criar módulo</button>}</div>
+                        }
+                        else
+                        {
+                            <div class="module-list">
+                                @foreach (var module in FilteredModules)
+                                {
+                                    <div class="module-entry @(SelectedModuleId == module.ModuleId ? "selected" : "")" @key="module.ModuleId">
+                                        <button class="module-select" @onclick="() => SelectModuleAsync(module.ModuleId)"><span class="module-glyph">▦</span><span class="module-name"><strong>@module.ModuleName</strong><small>ID @module.ModuleId</small></span><span class="module-count">@((DictionaryCounts.GetValueOrDefault(module.ModuleId, 0)).ToString("00"))</span></button>
+                                        <div class="module-entry-actions"><button type="button" title="Editar módulo" aria-label="Editar @module.ModuleName" @onclick="() => OpenEditModule(module)" @onclick:stopPropagation="true">✎</button><button type="button" class="delete-action" title="Excluir módulo" aria-label="Excluir @module.ModuleName" @onclick="() => AskDeleteModule(module)" @onclick:stopPropagation="true">×</button></div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </section>
+
+                    <section class="admin-panel dictionary-panel">
+                        @if (SelectedModule is null)
+                        {
+                            <div class="admin-unselected"><div class="empty-illustration"><span class="empty-folder">◫</span><i>✦</i></div><strong>Escolha um módulo</strong><p>Os dicionários cadastrados serão exibidos aqui.</p></div>
+                        }
+                        else
+                        {
+                            <div class="admin-panel-heading dictionary-panel-heading"><div><span class="panel-index">02</span><div><h3>Dicionários</h3><p>Vinculados a <strong>@SelectedModule.ModuleName</strong></p></div></div><button class="button-primary compact-button" @onclick="OpenCreateDictionary"><span>＋</span> Novo dicionário</button></div>
+                            @if (Dictionaries.Count == 0)
+                            {
+                                <div class="admin-empty dictionary-empty"><span>◫</span><strong>Este módulo ainda não tem dicionários</strong><small>Crie um dicionário para começar a adicionar entradas.</small><button class="button-secondary compact-button" @onclick="OpenCreateDictionary">＋ Cadastrar dicionário</button></div>
+                            }
+                            else
+                            {
+                                <div class="dictionary-list">
+                                    @foreach (var dictionary in Dictionaries)
+                                    {
+                                        <div class="dictionary-entry" @key="dictionary.Id"><div class="dictionary-icon">{ }</div><div class="dictionary-name"><strong>@dictionary.Name</strong><small>Parâmetro #@dictionary.Id</small></div><NavLink href="/" class="dictionary-open" title="Explorar entradas">Explorar <span>↗</span></NavLink><div class="module-entry-actions"><button type="button" title="Editar dicionário" aria-label="Editar @dictionary.Name" @onclick="() => OpenEditDictionary(dictionary)">✎</button><button type="button" class="delete-action" title="Excluir dicionário" aria-label="Excluir @dictionary.Name" @onclick="() => AskDeleteDictionary(dictionary)">×</button></div></div>
+                                    }
+                                </div>
+                            }
+                        }
+                    </section>
+                </div>
+                <div class="admin-footnote"><span class="admin-footnote-icon">i</span><span>Ao excluir um módulo ou dicionário, seus itens dependentes também serão removidos.</span></div>
+            </section>
+            <footer class="page-footer"><span>© 2026 <strong>DeLima IT</strong> · Dictionary Console</span><span>Administração do catálogo <b>✦</b></span></footer>
+        </div>
+    </main>
+</div>
+
+@if (IsEditorOpen)
+{
+    <div class="modal-backdrop" @onclick="CloseEditor">
+        <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="admin-editor-title" @onclick:stopPropagation="true">
+            <div class="modal-top"><div class="modal-icon">@(EditorKind == "Module" ? "▦" : "{ }")</div><button class="modal-close" @onclick="CloseEditor" aria-label="Fechar">×</button></div>
+            <div class="section-kicker">@(IsEditing ? "EDITAR" : "CADASTRAR") @(EditorKind == "Module" ? "MÓDULO" : "DICIONÁRIO")</div>
+            <h2 id="admin-editor-title">@(IsEditing ? "Atualize as informações" : EditorKind == "Module" ? "Novo módulo" : "Novo dicionário")</h2>
+            <p class="modal-description">@(EditorKind == "Module" ? "Módulos organizam os dicionários por aplicação ou domínio." : $"O dicionário será vinculado ao módulo {SelectedModule?.ModuleName}.")</p>
+            <label class="form-label">NOME <input @bind="EditorName" @bind:event="oninput" maxlength="100" placeholder="ex.: Checkout" /></label>
+            @if (!string.IsNullOrWhiteSpace(EditorError)){<div class="form-error">@EditorError</div>}
+            <div class="modal-actions"><button class="button-secondary" @onclick="CloseEditor">Cancelar</button><button class="button-primary" @onclick="SaveAsync" disabled="@IsSaving"><span>@(IsSaving ? "◌" : "＋")</span> @(IsSaving ? "Salvando..." : IsEditing ? "Salvar alterações" : "Cadastrar")</button></div>
+        </section>
+    </div>
+}
+
+@if (IsDeleteOpen)
+{
+    <div class="modal-backdrop" @onclick="CancelDelete"><section class="modal-card confirm-modal" role="alertdialog" aria-modal="true" @onclick:stopPropagation="true"><div class="confirm-icon">!</div><h2>@DeleteTitle</h2><p>@DeleteDescription</p>@if (!string.IsNullOrWhiteSpace(EditorError)){<div class="form-error">@EditorError</div>}<div class="modal-actions"><button class="button-secondary" @onclick="CancelDelete">Cancelar</button><button class="button-danger" @onclick="DeleteAsync" disabled="@IsSaving">@(IsSaving ? "Excluindo..." : "Sim, excluir")</button></div></section></div>
+}
+
+@code {
+    private IReadOnlyList<ModuleItem> Modules { get; set; } = [];
+    private IReadOnlyList<DictionaryItem> Dictionaries { get; set; } = [];
+    private Dictionary<int, int> DictionaryCounts { get; set; } = [];
+    private int? SelectedModuleId { get; set; }
+    private string ModuleSearch { get; set; } = "";
+    private string EditorKind { get; set; } = "Module";
+    private string EditorName { get; set; } = "";
+    private string? EditorError { get; set; }
+    private string? ErrorMessage { get; set; }
+    private string? SuccessMessage { get; set; }
+    private bool IsLoading { get; set; }
+    private bool IsSaving { get; set; }
+    private bool ApiIsOnline { get; set; }
+    private bool IsEditorOpen { get; set; }
+    private bool IsDeleteOpen { get; set; }
+    private bool IsEditing { get; set; }
+    private string DeleteKind { get; set; } = "Module";
+    private int DeleteId { get; set; }
+    private string DeleteName { get; set; } = "";
+
+    private ModuleItem? SelectedModule => Modules.FirstOrDefault(item => item.ModuleId == SelectedModuleId);
+    private IReadOnlyList<ModuleItem> FilteredModules => string.IsNullOrWhiteSpace(ModuleSearch) ? Modules : Modules.Where(item => item.ModuleName?.Contains(ModuleSearch, StringComparison.OrdinalIgnoreCase) == true).ToList();
+    private int DictionaryCount => DictionaryCounts.Values.Sum();
+    private string DeleteTitle => DeleteKind == "Module" ? "Excluir módulo?" : "Excluir dicionário?";
+    private string DeleteDescription => DeleteKind == "Module" ? $"O módulo {DeleteName} e todos os seus dicionários e entradas serão removidos." : $"O dicionário {DeleteName} e todas as suas entradas serão removidos.";
+
+    protected override async Task OnInitializedAsync() => await ReloadAsync();
+
+    private async Task ReloadAsync()
+    {
+        IsLoading = true;
+        ErrorMessage = null;
+        try
+        {
+            Modules = await Api.GetModulesAsync();
+            ApiIsOnline = true;
+            if (SelectedModuleId is not null && Modules.All(module => module.ModuleId != SelectedModuleId)) SelectedModuleId = null;
+            // Select a module on first visit so its dictionaries and the create action are immediately visible.
+            SelectedModuleId ??= Modules.FirstOrDefault()?.ModuleId;
+            await LoadDictionaryCountsAsync();
+            if (SelectedModuleId is not null) await LoadDictionariesAsync();
+        }
+        catch (Exception ex) { ApiIsOnline = false; ErrorMessage = FriendlyError(ex); }
+        finally { IsLoading = false; }
+    }
+
+    private async Task LoadDictionaryCountsAsync()
+    {
+        var counts = new Dictionary<int, int>();
+        foreach (var module in Modules)
+        {
+            counts[module.ModuleId] = (await Api.GetDictionariesAsync(module.ModuleId)).Count;
+        }
+        DictionaryCounts = counts;
+    }
+
+    private async Task SelectModuleAsync(int moduleId)
+    {
+        SelectedModuleId = moduleId;
+        await LoadDictionariesAsync();
+    }
+
+    private async Task LoadDictionariesAsync()
+    {
+        if (SelectedModuleId is null) { Dictionaries = []; return; }
+        try
+        {
+            Dictionaries = await Api.GetDictionariesAsync(SelectedModuleId.Value);
+            DictionaryCounts[SelectedModuleId.Value] = Dictionaries.Count;
+            ApiIsOnline = true;
+        }
+        catch (Exception ex) { ErrorMessage = FriendlyError(ex); ApiIsOnline = false; }
+    }
+
+    private void OpenCreateModule() { EditorKind = "Module"; IsEditing = false; EditorName = ""; EditorError = null; IsEditorOpen = true; }
+    private void OpenEditModule(ModuleItem module) { EditorKind = "Module"; IsEditing = true; DeleteId = module.ModuleId; EditorName = module.ModuleName ?? ""; EditorError = null; IsEditorOpen = true; }
+    private void OpenCreateDictionary() { if (SelectedModuleId is null) return; EditorKind = "Dictionary"; IsEditing = false; EditorName = ""; EditorError = null; IsEditorOpen = true; }
+    private void OpenEditDictionary(DictionaryItem dictionary) { EditorKind = "Dictionary"; IsEditing = true; DeleteId = dictionary.Id; EditorName = dictionary.Name; EditorError = null; IsEditorOpen = true; }
+    private void CloseEditor() { if (!IsSaving) { IsEditorOpen = false; EditorError = null; } }
+
+    private async Task SaveAsync()
+    {
+        if (string.IsNullOrWhiteSpace(EditorName)) { EditorError = "Informe um nome para continuar."; return; }
+        IsSaving = true;
+        EditorError = null;
+        try
+        {
+            var savedKind = EditorKind;
+            var savedName = EditorName.Trim();
+            using var response = EditorKind switch
+            {
+                "Module" when IsEditing => await Api.UpdateModuleAsync(DeleteId, savedName),
+                "Module" => await Api.CreateModuleAsync(savedName),
+                "Dictionary" when IsEditing => await Api.UpdateDictionaryAsync(DeleteId, savedName),
+                "Dictionary" when SelectedModuleId is not null => await Api.CreateDictionaryAsync(SelectedModuleId.Value, savedName),
+                _ => throw new InvalidOperationException("Selecione um módulo para cadastrar o dicionário.")
+            };
+            await DictionaryApiClient.EnsureSuccessAsync(response);
+            IsEditorOpen = false;
+            SuccessMessage = $"{(EditorKind == "Module" ? "Módulo" : "Dicionário")} {(IsEditing ? "atualizado" : "cadastrado")} com sucesso.";
+            await ReloadAsync();
+            if (savedKind == "Module" && !IsEditing)
+            {
+                var createdModule = Modules.FirstOrDefault(module => string.Equals(module.ModuleName, savedName, StringComparison.OrdinalIgnoreCase));
+                if (createdModule is not null)
+                {
+                    SelectedModuleId = createdModule.ModuleId;
+                    await LoadDictionariesAsync();
+                }
+            }
+        }
+        catch (Exception ex) { EditorError = FriendlyError(ex); }
+        finally { IsSaving = false; }
+    }
+
+    private void AskDeleteModule(ModuleItem module) { DeleteKind = "Module"; DeleteId = module.ModuleId; DeleteName = module.ModuleName ?? ""; EditorError = null; IsDeleteOpen = true; }
+    private void AskDeleteDictionary(DictionaryItem dictionary) { DeleteKind = "Dictionary"; DeleteId = dictionary.Id; DeleteName = dictionary.Name; EditorError = null; IsDeleteOpen = true; }
+    private void CancelDelete() { if (!IsSaving) { IsDeleteOpen = false; EditorError = null; } }
+
+    private async Task DeleteAsync()
+    {
+        IsSaving = true;
+        EditorError = null;
+        try
+        {
+            using var response = DeleteKind == "Module" ? await Api.DeleteModuleAsync(DeleteId) : await Api.DeleteDictionaryAsync(DeleteId);
+            await DictionaryApiClient.EnsureSuccessAsync(response);
+            if (DeleteKind == "Module" && SelectedModuleId == DeleteId) { SelectedModuleId = null; Dictionaries = []; }
+            if (DeleteKind == "Dictionary" && SelectedModuleId is not null) Dictionaries = Dictionaries.Where(item => item.Id != DeleteId).ToList();
+            IsDeleteOpen = false;
+            SuccessMessage = $"{(DeleteKind == "Module" ? "Módulo" : "Dicionário")} excluído com sucesso.";
+            await ReloadAsync();
+        }
+        catch (Exception ex) { EditorError = FriendlyError(ex); }
+        finally { IsSaving = false; }
+    }
+
+    private static string FriendlyError(Exception exception) => exception is HttpRequestException ? "Não foi possível conectar à API. Confira se o serviço está ativo e tente novamente." : exception.Message;
+}

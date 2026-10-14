@@ -17,11 +17,21 @@ namespace DeLimaIt.Dictionary.Application.Features.Configuration.Repository.Enti
         {
             this.DictionaryId = DictionaryId;
             Key = key;
+            OldKey = key;
+            Value = value;
+        }
+
+        public DictionaryValueEntity(int dictionaryId, string oldKey, string key, string value)
+        {
+            DictionaryId = dictionaryId;
+            OldKey = oldKey;
+            Key = key;
             Value = value;
         }
 
         public int DictionaryId { get; set; }
-        public string Key { get; set; }
-        public string Value { get; set; }
+        public string Key { get; set; } = string.Empty;
+        public string OldKey { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
     }
 }

@@ -15,9 +15,11 @@ namespace DeLimaIt.Dictionary.Api.Transport.V1
             Value = value;
         }
 
+        [Required, StringLength(200, MinimumLength = 1)]
+        public string Key { get; set; } = string.Empty;
+        [StringLength(200, MinimumLength = 1)]
+        public string? OldKey { get; set; }
         [Required]
-        public string Key { get; set; }
-        [Required]
-        public string Value { get; set; }
+        public string Value { get; set; } = string.Empty;
     }
 }
