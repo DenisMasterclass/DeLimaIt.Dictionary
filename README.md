@@ -107,6 +107,10 @@ Na edição de uma entrada, envie também `oldKey` quando o nome da chave for al
 
 Os endpoints de criação e edição devolvem `409 Conflict` quando o nome já existe em seu escopo. Uma referência a módulo inexistente ao criar dicionário resulta em `400 Bad Request`; identificadores inexistentes em operações de edição ou exclusão resultam em `404 Not Found`.
 
+## Publicação
+
+O pipeline de imagens e o procedimento de publicação no K3s estão em [deploy/README.md](deploy/README.md).
+
 ## Testes
 
 Execute os testes unitários com:

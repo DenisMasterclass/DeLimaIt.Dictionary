@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddHealthChecks();
 
 builder.Services.AddHttpClient<DictionaryApiClient>(client =>
 {
@@ -23,6 +24,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
+app.MapHealthChecks("/health/live");
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()

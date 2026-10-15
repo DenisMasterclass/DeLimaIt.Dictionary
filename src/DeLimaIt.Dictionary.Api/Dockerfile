@@ -10,6 +10,8 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/DeLimaIt.Dictionary.Api/DeLimaIt.Dictionary.Api.csproj", "src/DeLimaIt.Dictionary.Api/"]
+COPY ["src/DeLimaIt.Dictionary.Application/DeLimaIt.Dictionary.Application.csproj", "src/DeLimaIt.Dictionary.Application/"]
+COPY ["src/DelimaIt.Core.UseCases/DelimaIt.Core.UseCases.csproj", "src/DelimaIt.Core.UseCases/"]
 RUN dotnet restore "./src/DeLimaIt.Dictionary.Api/DeLimaIt.Dictionary.Api.csproj"
 COPY . .
 WORKDIR "/src/src/DeLimaIt.Dictionary.Api"
