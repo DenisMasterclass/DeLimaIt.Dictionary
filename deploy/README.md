@@ -12,7 +12,7 @@ Os manifests canônicos estão em `C:\dev\homelab-infra\kubernetes\applications\
 1. Um pull request executa os testes unitários, publica o projeto Web para validar a compilação e constrói as duas imagens sem enviá-las ao registry.
 2. Um push em `master` ou uma execução manual também envia as imagens ao GitHub Container Registry (GHCR).
 3. As imagens são `ghcr.io/denismasterclass/delimait.dictionary-api:sha-<commit>` e `ghcr.io/denismasterclass/delimait.dictionary-web:sha-<commit>`. O commit é o SHA completo de 40 caracteres. As duas imagens suportam amd64 e arm64.
-4. A promoção para produção deve atualizar as duas referências no repositório da infraestrutura. O Argo CD, se confirmado como responsável pela aplicação, reconcilia essa alteração no cluster.
+4. A promoção para produção deve atualizar as duas referências no repositório da infraestrutura. Após a sincronização manual da Application `dictionary-production`, o Argo CD reconcilia essa alteração no cluster.
 
 O workflow deste repositório faz CI e publicação de imagens. A Application preparada no `homelab-infra` usa sincronização manual, conforme o padrão atual. O workflow não tem credenciais do cluster e não publica diretamente em produção.
 
@@ -25,7 +25,7 @@ O workflow usa `GITHUB_TOKEN` com `packages: write`. Não precisa salvar um PAT 
 - Criar `dictionary-sql` com a chave `connection-string`, com credencial de banco dedicada à aplicação. Nunca colocar a string real em YAML versionado, argumentos do terminal ou logs de CI.
 - Confirmar o database e executar `database/schema.sql` nele, após revisar o alvo e o procedimento de backup. Não usar os testes de integração no banco de produção.
 - Permitir a conectividade dos pods com SQL Server; conferir NetworkPolicies existentes. ClusterIP evita exposição externa pelo Service, mas não restringe por si só outros pods.
-- Preparar uma entrada interna para o Service `dictionary-web`, acessível pelo Caddy. Conferir o ingress controller e as portas atuais antes de escolher Ingress ou NodePort.
+- Usar o Ingress Traefik já preparado no `homelab-infra`, acessado pelo Caddy via `192.168.15.11:30080`. Confirmar o funcionamento no cluster antes de ativar a rota pública.
 - Configurar Caddy para encaminhar somente `dictionary.delimait.com.br` para essa entrada. Preservar o Host e habilitar o percurso de WebSockets; não adicionar rota para `dictionary-api`.
 - Criar a aplicação Cloudflare Access para o hostname, com a política da equipe, antes de habilitar a rota pública. Não criar bypass geral para `/_blazor`: a conexão WebSocket deve usar a sessão autenticada.
 - Adicionar a rota do Tunnel para o Caddy existente e confirmar o DNS, seguindo o padrão atual. Não publicar diretamente o NodePort/Ingress na Internet.
@@ -78,4 +78,3 @@ Reverta o commit que promoveu as duas imagens em `homelab-infra` e sincronize o 
 - [GitHub: publicação de imagens com Actions](https://docs.github.com/en/actions/tutorials/publish-packages/publish-docker-images)
 - [Kubernetes: Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/)
 - [Microsoft: publicação de Blazor Server](https://learn.microsoft.com/en-us/aspnet/core/blazor/host-and-deploy/server?view=aspnetcore-8.0)
-
