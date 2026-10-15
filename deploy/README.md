@@ -1,11 +1,11 @@
 # Publicação na DeLimaIT
 
-## Arquitetura e estado desta preparação
+## Arquitetura em produção
 
 Frontend: `dictionary.delimait.com.br` → Cloudflare Access → Tunnel → Caddy → entrada privada do K3s → `dictionary-web:8080`.
 Backend: `dictionary-api:8080`, Service ClusterIP, sem Ingress, NodePort ou hostname externo. O Blazor Server chama a API dentro do cluster. SQL Server permanece na infraestrutura existente.
 
-Os manifests canônicos estão em `C:\dev\homelab-infra\kubernetes\applications\dictionary`, com overlay em `overlays/production`. A Application está em `kubernetes/platform/argocd/dictionary-application.yaml` e a rota do Caddy já foi preparada no Git. A entrada segue Traefik em `192.168.15.11:32492`. Ainda é necessário verificar os servidores, preencher as imagens e Secrets, aplicar a Application e configurar Access/Tunnel.
+Os manifests canônicos estão em `C:\dev\homelab-infra\kubernetes\applications\dictionary`, com overlay em `overlays/production`. A Application está em `kubernetes/platform/argocd/dictionary-application.yaml` e a rota do Caddy já foi preparada no Git. A entrada segue Traefik em `192.168.15.11:32492`. A primeira publicação foi concluída em 14/10/2026: os dois Deployments estão prontos, a aplicação está Synced Healthy no Argo CD, a API é interna e o domínio exige Cloudflare Access. O banco existente Dictionary foi preservado.
 
 ## Como funciona o pipeline
 
@@ -14,9 +14,11 @@ Os manifests canônicos estão em `C:\dev\homelab-infra\kubernetes\applications\
 3. As imagens são `ghcr.io/denismasterclass/delimait.dictionary-api:sha-<commit>` e `ghcr.io/denismasterclass/delimait.dictionary-web:sha-<commit>`. O commit é o SHA completo de 40 caracteres. As duas imagens suportam amd64 e arm64.
 4. A promoção para produção deve atualizar as duas referências no repositório da infraestrutura. Após a sincronização manual da Application `dictionary-production`, o Argo CD reconcilia essa alteração no cluster.
 
-O workflow deste repositório faz CI e publicação de imagens. A Application preparada no `homelab-infra` usa sincronização manual, conforme o padrão atual. O workflow não tem credenciais do cluster e não publica diretamente em produção.
+O workflow deste repositório faz CI e publicação de imagens. A Application no `homelab-infra` usa sincronização manual, conforme o padrão atual. O workflow não tem credenciais do cluster e não publica diretamente em produção.
 
 O workflow usa `GITHUB_TOKEN` com `packages: write`. Não precisa salvar um PAT para publicar imagens. O cluster precisa de acesso de leitura aos pacotes privados por meio do Secret `ghcr-pull`; use o mecanismo de secrets já adotado pela infraestrutura. Não torne os pacotes públicos sem decidir explicitamente por isso.
+
+Os comandos exatos de sincronização, as evidências e a configuração do token de leitura estão no [runbook da infraestrutura](https://github.com/DenisMasterclass/homelab-infra/blob/master/kubernetes/applications/dictionary/README.md).
 
 ## Preparação inicial da infraestrutura
 
