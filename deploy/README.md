@@ -5,7 +5,7 @@
 Frontend: `dictionary.delimait.com.br` → Cloudflare Access → Tunnel → Caddy → entrada privada do K3s → `dictionary-web:8080`.
 Backend: `dictionary-api:8080`, Service ClusterIP, sem Ingress, NodePort ou hostname externo. O Blazor Server chama a API dentro do cluster. SQL Server permanece na infraestrutura existente.
 
-Os manifests canônicos estão em `C:\dev\homelab-infra\kubernetes\applications\dictionary`, com overlay em `overlays/production`. A Application está em `kubernetes/platform/argocd/dictionary-application.yaml` e a rota do Caddy já foi preparada no Git. A entrada segue Traefik em `192.168.15.11:30080`. Ainda é necessário verificar os servidores, preencher as imagens e Secrets, aplicar a Application e configurar Access/Tunnel.
+Os manifests canônicos estão em `C:\dev\homelab-infra\kubernetes\applications\dictionary`, com overlay em `overlays/production`. A Application está em `kubernetes/platform/argocd/dictionary-application.yaml` e a rota do Caddy já foi preparada no Git. A entrada segue Traefik em `192.168.15.11:32492`. Ainda é necessário verificar os servidores, preencher as imagens e Secrets, aplicar a Application e configurar Access/Tunnel.
 
 ## Como funciona o pipeline
 
@@ -25,7 +25,7 @@ O workflow usa `GITHUB_TOKEN` com `packages: write`. Não precisa salvar um PAT 
 - Criar `dictionary-sql` com a chave `connection-string`, com credencial de banco dedicada à aplicação. Nunca colocar a string real em YAML versionado, argumentos do terminal ou logs de CI.
 - Confirmar o database e executar `database/schema.sql` nele, após revisar o alvo e o procedimento de backup. Não usar os testes de integração no banco de produção.
 - Permitir a conectividade dos pods com SQL Server; conferir NetworkPolicies existentes. ClusterIP evita exposição externa pelo Service, mas não restringe por si só outros pods.
-- Usar o Ingress Traefik já preparado no `homelab-infra`, acessado pelo Caddy via `192.168.15.11:30080`. Confirmar o funcionamento no cluster antes de ativar a rota pública.
+- Usar o Ingress Traefik já preparado no `homelab-infra`, acessado pelo Caddy via `192.168.15.11:32492`. Confirmar o funcionamento no cluster antes de ativar a rota pública.
 - Configurar Caddy para encaminhar somente `dictionary.delimait.com.br` para essa entrada. Preservar o Host e habilitar o percurso de WebSockets; não adicionar rota para `dictionary-api`.
 - Criar a aplicação Cloudflare Access para o hostname, com a política da equipe, antes de habilitar a rota pública. Não criar bypass geral para `/_blazor`: a conexão WebSocket deve usar a sessão autenticada.
 - Adicionar a rota do Tunnel para o Caddy existente e confirmar o DNS, seguindo o padrão atual. Não publicar diretamente o NodePort/Ingress na Internet.
@@ -53,7 +53,7 @@ git diff --check
 git diff
 ```
 
-Os exemplos usam `kustomize` standalone para editar e `kubectl kustomize` para renderizar. Sem o binário standalone, edite os dois `newTag` no YAML diretamente. O overlay da infraestrutura contém `SET_RELEASE_SHA` de propósito, para impedir uma primeira publicação acidental com uma versão indefinida.
+Os exemplos usam `kustomize` standalone para editar e `kubectl kustomize` para renderizar. Sem o binário standalone, edite os dois `newTag` no YAML diretamente. O overlay da infraestrutura fixa os digests da versão aprovada; substitua ambos ao promover uma release. Não use `latest`.
 
 ## Validação da publicação
 
